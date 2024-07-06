@@ -24,8 +24,6 @@ for file in js_files:
 
 
 
-dublicate_static_folders = ["img"]
+shutil.rmtree("../static/media", ignore_errors=True)
+shutil.copytree("build/static/media", "../static/media", dirs_exist_ok=True)
 
-for folder in dublicate_static_folders:
-    shutil.rmtree(os.path.join("../static/frontend", folder), ignore_errors=True)
-    shutil.copytree(os.path.join("src", folder), os.path.join("../static/frontend", folder))
