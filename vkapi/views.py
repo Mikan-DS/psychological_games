@@ -20,7 +20,7 @@ def index(request):
                 user_id = data['object']['user_id']
 
                 # token from bot_config.py
-                api.messages.send(access_token = token, user_id = str(user_id), message = "Hello, I'm bot!")
+                api.messages.send(user_id = str(user_id), message = "Hello, I'm bot!", random_id = 0)
                 return HttpResponse('ok', content_type="text/plain", status=200)
     else:
         return HttpResponse('see you :)')
