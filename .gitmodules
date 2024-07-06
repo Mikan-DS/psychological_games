@@ -1,0 +1,3 @@
+[submodule "frontend/psychological_games_frontend"]
+	path = frontend/psychological_games_frontend
+	url = https://github.com/Mikan-DS/psychological_games_frontend.git
