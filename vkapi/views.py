@@ -16,8 +16,7 @@ def index(request):
                 # confirmation_token from bot_config.py
                 return HttpResponse(confirmation_token, content_type="text/plain", status=200)
             if (data['type'] == 'message_new'):# if VK server send a message
-                session = vk.Session()
-                api = vk.API(session, v=5.5)
+                api = vk.API(token, v=5.5)
                 user_id = data['object']['user_id']
 
                 # token from bot_config.py
