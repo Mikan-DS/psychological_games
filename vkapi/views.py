@@ -6,19 +6,28 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from vkapi.bot_config import *
+from authorization.models import Settings
+# from vkapi.bot_config import *
 
-vk_session = vk_api.VkApi(token=token)
-api = vk_session.get_api()
+
 
 @csrf_exempt
 def index(request):
     if request.method == "POST":
         data = json.loads(request.body)
+        settings = Settings.objects.first()
+
+        secret_key = settings.vk_secret_key
+
         if data['secret'] == secret_key:
+
+            token = settings.vk_token
+            vk_session = vk_api.VkApi(token=token)
+            api = vk_session.get_api()
+
             if data['type'] == 'confirmation':
                 # confirmation_token from bot_config.py
-                return HttpResponse(confirmation_token, content_type="text/plain", status=200)
+                return HttpResponse(settings.vk_confirmation_token, content_type="text/plain", status=200)
             if (data['type'] == 'message_new'):# if VK server send a message
                 # api = vk.API(token, v=5.5)
                 user_id = str(data['object']['user_id'])

@@ -18,6 +18,14 @@ class ConfirmationCode(models.Model):
 
 class Settings(models.Model):
     confirmation_code_expiry = models.DurationField(default=timedelta(hours=1))
+    vk_token = models.CharField(max_length=255, blank=True, null=True)
+    vk_confirmation_token = models.CharField(max_length=100, blank=True, null=True)
+    vk_secret_key = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return (f"Settings(confirmation_code_expiry={self.confirmation_code_expiry}, "
+                f"vk_token={self.vk_token}, vk_confirmation_token={self.vk_confirmation_token}, "
+                f"vk_secret_key={self.vk_secret_key})")
 
     def save(self, *args, **kwargs):
         if not self.pk and Settings.objects.exists():
