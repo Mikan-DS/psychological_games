@@ -32,7 +32,7 @@ def index(request):
                 # api = vk.API(token, v=5.5)
                 user_id = str(data['object']['user_id'])
 
-                if data['object']['body'].startswith('!войти') or data['object']['ref_source']:
+                if data['object']['body'].startswith('!войти') or 'ref_source' in data['object']:
 
                     if not User.objects.filter(username=user_id):
                         # api.messages.send(user_id=user_id, message="Пользователь не найден, создается новый.", random_id=0)
