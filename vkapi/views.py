@@ -26,11 +26,18 @@ def index(request):
                 if data['object']['body'].startswith('!войти') or data['object']['ref_source']:
 
                     if not User.objects.filter(username=user_id):
-                        api.messages.send(user_id=user_id, message="Пользователь не найден, создается новый.", random_id=0)
-                        User.objects.create_user(user_id, )
+                        # api.messages.send(user_id=user_id, message="Пользователь не найден, создается новый.", random_id=0)
+                        # User.objects.create_user(user_id, )
+                        api.messages.send(
+                            user_id=user_id,
+                            message="Пользователь не найден, зарегистрируйтесь на сайте [ССЫЛКА НА САЙТ, КОТОРОГО НЕТ]",
+                            random_id=0)
+
+                    else:
+                        pass
 
                 # token from bot_config.py
-                api.messages.send(user_id=user_id, message=str(data), random_id=0)
+                api.messages.send(user_id=user_id, message="Это тестовое сообщение для разработки, его не будет:\n"+str(data), random_id=0)
                 return HttpResponse('ok', content_type="text/plain", status=200)
     else:
         return HttpResponse('see you :)')
