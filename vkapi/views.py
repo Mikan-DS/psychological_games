@@ -47,7 +47,9 @@ def index(request):
 
                 # token from bot_config.py
                 api.messages.send(user_id=user_id, message="Это тестовое сообщение для разработки, его не будет:\n"+str(data), random_id=0)
-                return HttpResponse('ok', content_type="text/plain", status=200)
+            return HttpResponse('ok', content_type="text/plain", status=200)
+        else:
+            raise Exception("Секрет неверен" + str(data['secret']) + "\n" + str(secret_key))
     else:
         return HttpResponse('see you :)')
 
