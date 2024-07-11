@@ -1,6 +1,11 @@
+import string
+import random
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
+
+from authorization.utils import generate_random_code
+
 
 class ConfirmationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -16,11 +21,14 @@ class ConfirmationCode(models.Model):
         return not self.is_used and datetime.now() < self.expires_at
 
 
+
 class Settings(models.Model):
     confirmation_code_expiry = models.DurationField(default=timedelta(hours=1))
     vk_token = models.CharField(max_length=255, blank=True, null=True)
     vk_confirmation_token = models.CharField(max_length=100, blank=True, null=True)
     vk_secret_key = models.CharField(max_length=100, blank=True, null=True)
+
+    host_url = models.URLField(max_length=255, default="http://localhost:8000/")
 
     def __str__(self):
         return (f"Settings(confirmation_code_expiry={self.confirmation_code_expiry}, "

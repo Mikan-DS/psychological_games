@@ -1,4 +1,6 @@
 import json
+import string
+from datetime import datetime, timedelta
 
 import vk
 import vk_api
@@ -6,7 +8,10 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from authorization.models import Settings
+from authorization.models import Settings, ConfirmationCode
+from authorization.utils import generate_random_code
+
+
 # from vkapi.bot_config import *
 
 
@@ -39,11 +44,21 @@ def index(request):
                         # User.objects.create_user(user_id, )
                         api.messages.send(
                             user_id=user_id,
-                            message="Пользователь не найден, зарегистрируйтесь на сайте [ССЫЛКА НА САЙТ, КОТОРОГО НЕТ]",
+                            message=f"Пользователь не найден, зарегистрируйтесь на сайте {settings.host_url}",
                             random_id=0)
 
                     else:
-                        pass
+                        expiry_duration = settings.confirmation_code_expiry if settings else timedelta(days=1)
+                        expires_at = datetime.now() + expiry_duration
+                        code = generate_random_code(4, string.digits)
+                        confirmation_code = ConfirmationCode(user_id=user_id, code=code, expires_at=expires_at)
+                        confirmation_code.save()
+
+                        api.messages.send(
+                            user_id=user_id,
+                            message=f"Ваш код для входа: {confirmation_code.code}\nТак-же вы можете зайти по ссылке"
+                                    f"{settings.host_url}/login/{confirmation_code.code}",
+                            random_id=0)
 
                 # token from bot_config.py
                 api.messages.send(user_id=user_id, message="Это тестовое сообщение для разработки, его не будет:\n"+str(data), random_id=0)
