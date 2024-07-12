@@ -18,32 +18,34 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            username = form.cleaned_data.get('username')
-
             try:
                 settings = Settings.objects.first()
                 token = settings.vk_token
                 vk_session = vk_api.VkApi(token=token)
                 api = vk_session.get_api()
 
-                user = api.users.get(user_ids=("salem_mikan"))
+                vk_user = api.users.get(user_ids=("salem_mikan"))
 
-                if not user:
+                if not vk_user:
                     return HttpResponse("Пользователь ВК не найден!")
-                user = user[0]
-                user_id = str(user["id"])
+                vk_user = vk_user[0]
+                user_id = str(vk_user["id"])
+
+                # Создание нового пользователя с user_id в качестве имени пользователя
+                user = form.save(commit=False)
+                user.username = user_id
+                user.save()
 
                 password = form.cleaned_data.get('password1')
                 user = authenticate(username=user_id, password=password)
                 # login(request, user)
                 # return redirect('app')
-                return redirect('https://vk.com/im?sel=-199827634&ref_source=ПолучитьКод')
+                return redirect('<https://vk.com/im?sel=-199827634&ref_source=ПолучитьКод>')
 
             except:
                 return HttpResponse("Произошла ошибка!")
 
-
     else:
         form = UserCreationForm()
     return render(request, 'authorization/register.html', {'form': form})
+
