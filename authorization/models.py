@@ -30,6 +30,8 @@ class Settings(models.Model):
 
     host_url = models.URLField(max_length=255, default="http://localhost:8000/")
 
+    send_debug_messages = models.BooleanField(default=True)
+
     def __str__(self):
         return (f"Settings(confirmation_code_expiry={self.confirmation_code_expiry}, "
                 f"vk_token={self.vk_token}, vk_confirmation_token={self.vk_confirmation_token}, "

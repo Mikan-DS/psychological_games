@@ -2,7 +2,6 @@ import json
 import string
 from datetime import datetime, timedelta
 
-import vk
 import vk_api
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -10,11 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from authorization.models import Settings, ConfirmationCode
 from authorization.utils import generate_random_code
-
-
-# from vkapi.bot_config import *
-
-
 
 @csrf_exempt
 def index(request):
@@ -31,10 +25,8 @@ def index(request):
             api = vk_session.get_api()
 
             if data['type'] == 'confirmation':
-                # confirmation_token from bot_config.py
                 return HttpResponse(settings.vk_confirmation_token, content_type="text/plain", status=200)
-            if (data['type'] == 'message_new'):# if VK server send a message
-                # api = vk.API(token, v=5.5)
+            if data['type'] == 'message_new':
                 user_id = str(data['object']['user_id'])
 
                 if data['object']['body'].startswith('!войти') or 'ref_source' in data['object']:
@@ -42,8 +34,6 @@ def index(request):
                     user = User.objects.filter(username=user_id)
 
                     if not user:
-                        # api.messages.send(user_id=user_id, message="Пользователь не найден, создается новый.", random_id=0)
-                        # User.objects.create_user(user_id, )
                         api.messages.send(
                             user_id=user_id,
                             message=f"Пользователь не найден, зарегистрируйтесь на сайте {settings.host_url}",
@@ -62,23 +52,33 @@ def index(request):
 
                             api.messages.send(
                                 user_id=user_id,
-                                message=f"Ваш код для входа: {confirmation_code.code}\nТак-же вы можете зайти по ссылке"
-                                        f"{settings.host_url}/login/{confirmation_code.code}",
+                                message=f"Ваш код для входа: {confirmation_code.code}\nТак-же вы можете зайти по ссылке\n"
+                                        f"{settings.host_url}login/{confirmation_code.code}",
                                 random_id=0)
                         except Exception as e:
 
-                            api.messages.send(
-                                user_id=user_id,
-                                message=f"Ошибка! {repr(e)}",
-                                random_id=0)
+                            if settings.send_debug_messages:
+                                api.messages.send(
+                                    user_id=user_id,
+                                    message=f"Ошибка! {repr(e)}",
+                                    random_id=0)
+                            else:
+                                api.messages.send(
+                                    user_id=user_id,
+                                    message=f"Произошла ошибка!",
+                                    random_id=0)
 
+                if settings.send_debug_messages:
+                    api.messages.send(
+                        user_id=user_id,
+                        message="Это тестовое сообщение для разработки, его не будет:\n\n" + str(data),
+                        random_id=0)
 
-
-                # token from bot_config.py
-                api.messages.send(user_id=user_id, message="Это тестовое сообщение для разработки, его не будет:\n"+str(data), random_id=0)
             return HttpResponse('ok', content_type="text/plain", status=200)
         else:
-            raise Exception("Секрет неверен" + str(data['secret']) + "\n" + str(secret_key))
+            if settings.send_debug_messages:
+                raise Exception("Секрет неверен" + str(data['secret']) + "\n" + str(secret_key))
+            else:
+                raise Exception("Секрет неверен")
     else:
-        return HttpResponse('see you :)')
-
+        return HttpResponse('Вам тут не место!')
