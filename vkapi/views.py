@@ -53,7 +53,7 @@ def index(request):
                             api.messages.send(
                                 user_id=user_id,
                                 message=f"Ваш код для входа: {confirmation_code.code}\nТак-же вы можете зайти по ссылке\n"
-                                        f"{settings.host_url}login/{confirmation_code.code}",
+                                        f"{settings.host_url}auth/login/{user_id}/{confirmation_code.code}",
                                 random_id=0)
                         except Exception as e:
 

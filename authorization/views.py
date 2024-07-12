@@ -1,20 +1,42 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import render
-import vk_api
-
-from authorization.models import Settings
-
-
-# Create your views here.
-
-def confirmation_token(request):
-    return HttpResponse('see you :)')
-
-
 from django.shortcuts import render, redirect
+import vk_api
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
+from authorization.models import Settings, ConfirmationCode
+
+
+def login_view(request):
+    if request.method == 'POST':
+        code_input = request.POST.get('code')
+        try:
+            confirmation_code = ConfirmationCode.objects.get(code=code_input, is_used=False)
+            if confirmation_code.is_active:
+                confirmation_code.is_used = True
+                confirmation_code.save()
+                login(request, confirmation_code.user)
+                return redirect('app')  # Redirect to your app's main view
+            else:
+                return render(request, 'authorization/login.html', {'error': 'Код неверен или истёк.'})
+        except ConfirmationCode.DoesNotExist:
+            return render(request, 'authorization/login.html', {'error': 'Код неверен или истёк.'})
+    return render(request, 'authorization/login.html')
+
+def login_with_code(request, user_id, code):
+    try:
+        user = User.objects.get(username=user_id)
+        confirmation_code = ConfirmationCode.objects.get(code=code, user=user, is_used=False)
+        if confirmation_code.is_active:
+            confirmation_code.is_used = True
+            confirmation_code.save()
+            login(request, confirmation_code.user)
+            return redirect('app')  # Redirect to your app's main view
+        else:
+            return render(request, 'authorization/login.html', {'error': 'Код неверен или истёк.', "user": user.first_name or "Имени нет"})
+    except ConfirmationCode.DoesNotExist:
+        return render(request, 'authorization/login.html', {'error': 'Код неверен или истёк.', "user": "Unknown"})
+
 
 
 def register(request):
