@@ -67,6 +67,11 @@ def index(request):
                                     user_id=user_id,
                                     message=f"Произошла ошибка!",
                                     random_id=0)
+                else:
+                    api.messages.send(
+                        user_id=user_id,
+                        message=f"Доступные комманды:\n!войти - получить код для входа",
+                        random_id=0)
 
                 if settings.send_debug_messages:
                     api.messages.send(
