@@ -127,8 +127,8 @@ def pay_init(request):
             )
 
             if buy_type == "game_consultation" and consultation_parameters:
-                age = Age.objects.get(id=consultation_parameters['age_id'])
-                contact_way = ContactWay.objects.get(id=consultation_parameters['contact_way_id'])
+                age = Age.objects.get(value=consultation_parameters['age'])
+                contact_way = ContactWay.objects.get(method=consultation_parameters['contact_way'])
                 ConsultationParameters.objects.create(
                     question=consultation_parameters['custom_question'],
                     age=age,
