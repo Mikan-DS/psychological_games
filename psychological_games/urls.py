@@ -22,7 +22,8 @@ from django.urls import path, include
 urlpatterns = ([
     path('', include('frontend.urls')),
     path('admin/', admin.site.urls),
-    path('vk_callback/', include('vkapi.urls'))
+    path('vk_callback/', include('vkapi.urls')),
+    path('auth/', include('authorization.urls'))
 ])
 
 if settings.DEBUG:

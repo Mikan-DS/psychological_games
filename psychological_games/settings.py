@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'frontend.apps.FrontendConfig',
-    'vkapi.apps.VkapiConfig'
+    'vkapi.apps.VkapiConfig',
+    'authorization.apps.AuthorizationConfig'
 ]
 
 MIDDLEWARE = [
