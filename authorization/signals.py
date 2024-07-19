@@ -1,10 +1,11 @@
-import random
 import string
 
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
+
 from .models import Settings, Age, ContactWay, OrderItem
 from .utils import generate_random_code
+
 
 @receiver(post_migrate)
 def create_default_settings(sender, **kwargs):

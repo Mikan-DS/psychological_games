@@ -527,9 +527,13 @@ footer a{
 }
 
 .errorInput label{
-    color: red;
+    color: #DC1C07;
 }
 
 .errorInput input{
-    border-bottom: 1px solid red;
+    border-bottom: 1px solid #DC1C07;
+}
+
+.errorInput .code-input{
+    background-color: #DC1C07;
 }

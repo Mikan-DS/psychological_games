@@ -1,5 +1,5 @@
-import os
 import glob
+import os
 import shutil
 
 if os.path.basename(os.getcwd()) != 'psychological_games_frontend':
