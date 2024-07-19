@@ -34,10 +34,6 @@ def index(request):
                     if user:
                         by_ref_source = True
                         user = user.first()
-                else:
-                    user = User.objects.filter(id=user_id)
-                    if user:
-                        user = user.first()
 
                 in_cause_phone = (data['object']['body']
                                   .replace('+', '')
