@@ -66,7 +66,7 @@ def index(request):
                     write_message(
                         api,
                         user_id,
-                        f"Вы привязали этот вк к своему аккаунту на сайте {settings.host_url}!"
+                        f"Вы привязали этот вк к своему аккаунту на сайте {settings.host_url}"
                     )
 
                 if data['object']['body'].startswith('!войти') and not user:
@@ -77,7 +77,7 @@ def index(request):
                     )
                 elif data['object']['body'].startswith('!войти') or by_ref_source:
 
-                    user = User.objects.filter(id=user_id)
+                    user = User.objects.filter(username=user_id)
 
                     if not user:
                         write_message(
