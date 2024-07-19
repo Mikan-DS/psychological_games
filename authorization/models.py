@@ -58,7 +58,7 @@ class OrderItem(models.Model):
 
 class Purchase(models.Model):
     id = models.AutoField(primary_key=True)
-    item_type = models.CharField(max_length=255)
+    item_type = models.CharField(max_length=255) #TODO ИСПРАВИТЬ!!!
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cost = models.DecimalField(max_digits=10, decimal_places=2)
     paid = models.BooleanField(default=False)
