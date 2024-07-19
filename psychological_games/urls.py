@@ -23,8 +23,10 @@ urlpatterns = ([
     path('', include('frontend.urls')),
     path('admin/', admin.site.urls),
     path('vk_callback/', include('vkapi.urls')),
-    path('auth/', include('authorization.urls'))
+    path('auth/', include('authorization.urls')),
+    path('games/', include('games.urls'))
 ])
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
