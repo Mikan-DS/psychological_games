@@ -68,11 +68,6 @@ def unpack_archive(sender, instance: Game, **kwargs):
                             ))
             shutil.rmtree(extract_path)
 
-            # # Обновить поле index если index.html найден
-            # if index_html_path:
-            #     instance.index.save(os.path.join(instance.title, os.path.basename(index_html_path)), File(open(index_html_path, 'rb')), save=False)
-            #     instance.save(update_fields=['index'])
-
 
 
 
