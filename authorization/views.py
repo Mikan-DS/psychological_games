@@ -1,7 +1,7 @@
 import json
 
 from django.contrib.auth.models import User
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 import vk_api
 from django.contrib.auth.forms import UserCreationForm
@@ -181,3 +181,22 @@ def login_init(request, phone):
     except Exception as e:
         pass
     return JsonResponse({'result': False, "message": "Неверный логин"})
+
+def login_code(request, phone, code):
+
+    try:
+        user = User.objects.get(pk=phone)
+
+        confirmation_code = ConfirmationCode.objects.get(code=code, user=user)
+
+        assert confirmation_code.is_active
+
+        login(request, user)
+
+        return redirect("/")
+
+    except Exception as e:
+
+        return redirect(f"/?login={phone}&code={code}")
+
+

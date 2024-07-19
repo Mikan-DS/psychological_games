@@ -1,7 +1,7 @@
 @font-face {
     font-family: "Gogol";
     src: local("Gogol Regular"),
-    url("./fonts/Gogol Regular.ttf") format("truetype");
+    url("/static/frontend/fonts/Gogol Regular.ttf") format("truetype");
 }
 
 body {
@@ -460,6 +460,8 @@ footer a{
     margin-bottom: 60px;
     margin-top: 20px;
     color: #75766E;
+    max-width: 350px;
+    text-align: center;
 }
 
 .loginModal img{
@@ -522,4 +524,12 @@ footer a{
 
 #Policy .tertiaryButton{
     margin-top: 73px;
+}
+
+.errorInput label{
+    color: red;
+}
+
+.errorInput input{
+    border-bottom: 1px solid red;
 }

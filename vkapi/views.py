@@ -33,7 +33,7 @@ def index(request):
 
                 if data['object']['body'].startswith('!войти') or 'ref_source' in data['object']:
 
-                    user = User.objects.filter(username=user_id)
+                    user = User.objects.filter(id=user_id)
 
                     if not user:
                         api.messages.send(
@@ -42,6 +42,7 @@ def index(request):
                             random_id=0)
 
                     else:
+                        user = user.first()
 
                         try:
                             generate_and_send_login_code(api, user)
