@@ -114,9 +114,12 @@ def login_code(request, phone, code):
     try:
         user = User.objects.get(pk=phone)
 
-        confirmation_code = ConfirmationCode.objects.get(code=code, user=user)
+        confirmation_code = ConfirmationCode.objects.get(code=code, user=user, is_used=False)
 
         assert confirmation_code.is_active
+
+        confirmation_code.is_used = True
+        confirmation_code.delete()
 
         login(request, user)
 
