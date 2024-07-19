@@ -28,7 +28,6 @@ def get_user(request):
 
 
 def checknumber(request, phone):
-
     try:
         if User.objects.get(pk=int(phone.replace(" ", ""))):
             return JsonResponse({"result": False})
@@ -45,10 +44,8 @@ def pay_debug(request, order_id):
         order.paid = True
         order.save()
 
-
         return HttpResponse(header + "<p>Попав на эту страницу вы автоматически \"оплатили\" заказ</p>")
 
     except:
 
-
-        return HttpResponse(header+"<p>Этот товар уже был оплачен или его не существует</p>")
+        return HttpResponse(header + "<p>Этот товар уже был оплачен или его не существует</p>")

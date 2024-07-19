@@ -19,7 +19,6 @@ def logoutView(request):
         return JsonResponse({'success': False})
 
 
-
 @csrf_exempt
 def pay_init(request):
     if request.method == 'POST':
@@ -70,7 +69,8 @@ def pay_init(request):
 
             settings = Settings.objects.first()
 
-            return JsonResponse({'message': 'Purchase created successfully', "url": f"{settings.pay_url}pay/{purchase.id}"}, status=201)
+            return JsonResponse(
+                {'message': 'Purchase created successfully', "url": f"{settings.pay_url}pay/{purchase.id}"}, status=201)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
@@ -109,8 +109,8 @@ def login_init(request, phone):
         pass
     return JsonResponse({'result': False, "message": "Неверный логин"})
 
-def login_code(request, phone, code):
 
+def login_code(request, phone, code):
     try:
         user = User.objects.get(pk=phone)
 
@@ -125,5 +125,3 @@ def login_code(request, phone, code):
     except Exception as e:
 
         return redirect(f"/?login={phone}&code={code}")
-
-

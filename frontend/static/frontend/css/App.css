@@ -27,7 +27,7 @@ header a {
     font-size: 20px;
 }
 
-header a:hover{
+header a:hover {
     color: #F4CC18;
 }
 
@@ -45,7 +45,7 @@ header > div > div {
     align-items: center;
 }
 
-#coverSection{
+#coverSection {
     background-color: #121715;
     width: 100%;
     height: 900px;
@@ -55,53 +55,54 @@ header > div > div {
     background-size: cover;
 }
 
-img{
+img {
     pointer-events: none;
 }
 
-.GogolText{
+.GogolText {
     font-family: Gogol, serif;
 }
 
-h1{
+h1 {
     font-size: 80px;
     font-weight: 600;
 }
 
-h2{
+h2 {
     font-family: Gogol, serif;
     font-size: 50px;
     font-weight: 500;
 
 }
 
-.screenshotsBlock p{
+.screenshotsBlock p {
     max-width: 320px;
     color: #75766E;
     font-size: 18px;
     font-weight: 500;
 }
-.screenshotsBlock h4{
+
+.screenshotsBlock h4 {
     max-width: 320px;
     font-size: 20px;
     font-weight: 500;
 }
 
-.statisticBlock p{
+.statisticBlock p {
     color: #75766E;
     font-size: 18px;
     font-weight: 500;
     margin-top: 0;
 }
 
-.NumberAnimation{
+.NumberAnimation {
     color: #D44C02;
     font-size: 130px;
     font-family: Gogol, serif;
     line-height: 1;
 }
 
-.factSection{
+.factSection {
     background-color: #FFDE51;
     background-repeat: no-repeat;
     background-position: left;
@@ -110,78 +111,77 @@ h2{
     height: 280px;
 }
 
-.factSection h2{
+.factSection h2 {
     font-family: 'Montserrat', sans-serif;
     font-size: 40px;
 }
 
-.factSection p{
+.factSection p {
     font-size: 18px;
 }
 
-#shockImage{
+#shockImage {
     background-repeat: no-repeat;
     background-position: top left;
     background-size: cover;
     height: 600px;
 }
 
-.shockSection p{
+.shockSection p {
     color: #75766E;
     font-size: 18px;
 }
 
-#Authors{
+#Authors {
     width: 1400px;
     margin-left: auto;
     margin-right: auto;
 }
 
-#Authors h2{
+#Authors h2 {
     font-size: 30px;
     width: 880px;
     margin-left: auto;
     line-height: 1;
 }
 
-#Authors > div{
+#Authors > div {
     width: 1145px;
     margin-left: auto;
 }
 
-.StretchedList{
+.StretchedList {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.Author{
+.Author {
     height: 280px;
     align-items: center;
 }
 
-.Author img{
+.Author img {
     height: 100%;
 }
 
-.Author > div{
+.Author > div {
     width: 652px;
     font-size: 20px;
     line-height: 1;
 }
 
-.Author p{
+.Author p {
     margin-top: 6px;
     margin-bottom: 40px;
 }
 
-.Author h3{
+.Author h3 {
     margin: 0;
 }
 
 
-
-.AuthorsBlock{
+.AuthorsBlock {
     display: flex;
     flex-direction: column;
     gap: 60px;
@@ -189,7 +189,7 @@ h2{
     margin-bottom: 100px;
 }
 
-#Authors a{
+#Authors a {
     color: #75766E;
     text-decoration: none;
     font-size: 40px;
@@ -202,23 +202,23 @@ h2{
     text-decoration: underline;
 }
 
-#Authors .NumberAnimation{
+#Authors .NumberAnimation {
     color: #383D38;
     font-size: 130px;
     display: inline;
     line-height: 0;
 }
 
-#FAQ{
+#FAQ {
     background-color: #F3F2EE;
 }
 
-.ToggleQuestion p{
+.ToggleQuestion p {
     color: #75766E;
     font-size: 20px;
 }
 
-footer{
+footer {
     background-color: #1A382B;
     width: 100%;
     height: 494px;
@@ -230,15 +230,14 @@ footer{
     align-items: center;
 }
 
-footer a{
+footer a {
     color: white;
     text-decoration: none;
     font-size: 16px;
 }
 
 
-
-.primaryButton{
+.primaryButton {
     background: none;
     border: none;
     color: #F4CC18;
@@ -246,11 +245,11 @@ footer a{
     padding: 0;
 }
 
-.primaryButton:hover{
+.primaryButton:hover {
     color: #E0BB15;
 }
 
-.secondaryButton{
+.secondaryButton {
     color: #222226;
     background: none;
     border-color: #222226;
@@ -260,13 +259,13 @@ footer a{
     width: 100%;
 }
 
-.secondaryButton:hover{
+.secondaryButton:hover {
     background-color: #FFDE51;
     border: none;
     padding: 40px;
 }
 
-.footerButton{
+.footerButton {
     background: none;
     border: none;
     color: white;
@@ -274,7 +273,8 @@ footer a{
     padding: 0;
     font-size: 16px;
 }
-.footerButton:hover{
+
+.footerButton:hover {
     color: #F4CC18;
 }
 
@@ -310,53 +310,53 @@ footer a{
     padding: 0;
 }
 
-.modal-content h1{
+.modal-content h1 {
     text-align: center;
     font-size: 40px;
     color: #383D38;
 }
 
 
-.paymentVariant{
+.paymentVariant {
     display: flex;
     width: 100%;
     align-items: flex-start;
     cursor: pointer;
 }
 
-.paymentVariant p{
+.paymentVariant p {
     max-width: 500px;
     color: #9E9F9A;
     font-size: 14px;
 
 }
 
-.paymentVariant .radioButton{
+.paymentVariant .radioButton {
     margin-right: 10px;
 }
 
-.paymentVariant label{
+.paymentVariant label {
     color: #383D38;
     font-size: 14px;
     font-weight: 500;
 }
 
-.formInputText{
+.formInputText {
     border: none;
     border-bottom: 1px solid #9E9F9A;
 }
 
-.formInputText:focus-visible{
+.formInputText:focus-visible {
     border: none;
     border-bottom: 1px solid #9E9F9A;
     outline: none;
 }
 
-.formInputs{
+.formInputs {
     margin-bottom: 80px;
 }
 
-.formInputs h2{
+.formInputs h2 {
     font-family: 'Montserrat', sans-serif;
     font-size: 26px;
     font-weight: 600;
@@ -365,7 +365,7 @@ footer a{
     margin-bottom: 30px;
 }
 
-.formInputs h3{
+.formInputs h3 {
     font-family: 'Montserrat', sans-serif;
     font-size: 26px;
     font-weight: 600;
@@ -373,50 +373,50 @@ footer a{
     margin-top: 70px;
 }
 
-.formInputs .radioButton{
+.formInputs .radioButton {
     margin: 10px 10px 10px 40px;
 }
 
-.formInputs a{
+.formInputs a {
     color: #383D38;
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
 }
 
-.formInputs a:hover{
+.formInputs a:hover {
     text-decoration: underline;
 }
 
 
-.formInputs label{
+.formInputs label {
     color: #9E9F9A;
     font-size: 14px;
     font-weight: 500;
 }
 
-.formTextInputs label{
+.formTextInputs label {
     display: block;
     margin-bottom: 28px;
 
 }
 
-.formTextInputs input{
+.formTextInputs input {
     width: 100%;
     margin-bottom: 20px;
 
 }
 
-.consultationParameters{
+.consultationParameters {
     margin-top: 80px;
 }
 
-.consultationParameters div{
+.consultationParameters div {
     display: inline-flex;
     align-items: center;
 }
 
-.tertiaryButton{
+.tertiaryButton {
     display: block;
     color: white;
     background-color: #383D38;
@@ -431,7 +431,7 @@ footer a{
     font-weight: 600;
 }
 
-.tertiaryButton:hover{
+.tertiaryButton:hover {
     color: #383D38;
     background-color: #FFDE51;
 }
@@ -453,7 +453,7 @@ footer a{
     padding: 8px;
 }
 
-.loginModal h2{
+.loginModal h2 {
     font-family: 'Montserrat', sans-serif;
     font-size: 18px;
     font-weight: 500;
@@ -464,39 +464,39 @@ footer a{
     text-align: center;
 }
 
-.loginModal img{
+.loginModal img {
     width: 400px;
 }
 
-.loginModal label{
+.loginModal label {
     color: #9E9F9A;
     font-size: 12px;
     font-weight: 500;
     margin-top: 60px;
 }
 
-.loginModal input[type="tel"]{
+.loginModal input[type="tel"] {
     margin-bottom: 40px;
 }
 
-.loginModal a{
+.loginModal a {
     color: #383D38;
     text-decoration: none;
 }
 
-.loginModal a:hover{
+.loginModal a:hover {
     text-decoration: underline;
 }
 
-.loginModal .code-input-container{
+.loginModal .code-input-container {
     margin-bottom: 30px;
 }
 
-.loginModal .tertiaryButton{
+.loginModal .tertiaryButton {
     margin-bottom: 40px;
 }
 
-#Policy h1{
+#Policy h1 {
     color: #383D38;
     font-size: 26px;
     font-weight: 600;
@@ -505,7 +505,7 @@ footer a{
     text-align: left;
 }
 
-#Policy h2{
+#Policy h2 {
     font-family: 'Montserrat', sans-serif;
     color: #75766E;
     font-size: 16px;
@@ -514,7 +514,7 @@ footer a{
     margin-top: 25px;
 }
 
-#Policy p{
+#Policy p {
     font-family: 'Montserrat', sans-serif;
     color: #75766E;
     font-size: 16px;
@@ -522,18 +522,18 @@ footer a{
     margin: 0;
 }
 
-#Policy .tertiaryButton{
+#Policy .tertiaryButton {
     margin-top: 73px;
 }
 
-.errorInput label{
+.errorInput label {
     color: #DC1C07;
 }
 
-.errorInput input{
+.errorInput input {
     border-bottom: 1px solid #DC1C07;
 }
 
-.errorInput .code-input{
+.errorInput .code-input {
     background-color: #DC1C07;
 }

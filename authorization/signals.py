@@ -10,7 +10,7 @@ from .utils import generate_random_code
 @receiver(post_migrate)
 def create_default_settings(sender, **kwargs):
     if not Settings.objects.exists():
-        Settings.objects.create(vk_secret_key=generate_random_code(25, chars=string.ascii_letters+string.digits))
+        Settings.objects.create(vk_secret_key=generate_random_code(25, chars=string.ascii_letters + string.digits))
 
     if not Age.objects.exists():
         default_ages = ["10-12 ЛЕТ", "12-14 ЛЕТ", "14-16 ЛЕТ", "16-18 ЛЕТ", "КОНСУЛЬТАЦИЯ ДЛЯ РОДИТЕЛЯ"]

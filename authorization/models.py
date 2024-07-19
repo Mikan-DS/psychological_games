@@ -19,7 +19,6 @@ class ConfirmationCode(models.Model):
         return not self.is_used and timezone.now() < self.expires_at
 
 
-
 class Settings(models.Model):
     confirmation_code_expiry = models.DurationField(default=timedelta(hours=1))
     vk_token = models.CharField(max_length=255, blank=True, null=True)
@@ -50,11 +49,12 @@ class OrderItem(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.item_type.isalnum() or ' ' in self.item_type or '.' in self.item_type:
-            raise ValueError("Тип товара может содержать только латиницу без пробелов и точек: "+self.item_type)
+            raise ValueError("Тип товара может содержать только латиницу без пробелов и точек: " + self.item_type)
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
+
 
 class Purchase(models.Model):
     id = models.AutoField(primary_key=True)
@@ -66,6 +66,7 @@ class Purchase(models.Model):
     def __str__(self):
         return f"{self.item_type} by {self.user} for {self.cost} - {'Paid' if self.paid else 'Not Paid'}"
 
+
 class ContactWay(models.Model):
     id = models.AutoField(primary_key=True)
     method = models.CharField(max_length=255)
@@ -73,12 +74,14 @@ class ContactWay(models.Model):
     def __str__(self):
         return self.method
 
+
 class Age(models.Model):
     id = models.AutoField(primary_key=True)
     value = models.CharField(max_length=255)
 
     def __str__(self):
         return self.value
+
 
 class ConsultationParameters(models.Model):
     id = models.AutoField(primary_key=True)

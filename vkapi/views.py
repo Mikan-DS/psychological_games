@@ -39,7 +39,6 @@ def index(request):
                     if user:
                         user = user.first()
 
-
                 in_cause_phone = (data['object']['body']
                                   .replace('+', '')
                                   .replace("(", "")
@@ -73,7 +72,6 @@ def index(request):
                         f"Вы привязали этот вк к своему аккаунту на сайте {settings.host_url}!"
                     )
 
-
                 if data['object']['body'].startswith('!войти') and not user:
                     write_message(
                         api,
@@ -89,7 +87,7 @@ def index(request):
                             api,
                             user_id,
                             f"Пользователь не найден, зарегистрируйтесь на сайте {settings.host_url}"
-                            )
+                        )
 
                     else:
                         user = user.first()
@@ -132,4 +130,3 @@ def index(request):
                 raise Exception("Секрет неверен")
     else:
         return HttpResponse('Вам тут не место!')
-
