@@ -35,7 +35,7 @@ def index(request):
                         by_ref_source = True
                         user = user.first()
 
-                in_cause_phone = (data['object']['body']
+                in_cause_phone = (data['object']['ref_source']
                                   .replace('+', '')
                                   .replace("(", "")
                                   .replace(")", "")
