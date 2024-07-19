@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'frontend.apps.FrontendConfig',
     'vkapi.apps.VkapiConfig',
-    'authorization.apps.AuthorizationConfig'
+    'authorization.apps.AuthorizationConfig',
+    'games.apps.GamesConfig'
 ]
 
 MIDDLEWARE = [
