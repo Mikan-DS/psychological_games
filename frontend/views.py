@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
+
+from authorization.models import Purchase
+
 
 # Create your views here.
 def app(request, project_id=None):
@@ -32,3 +35,20 @@ def checknumber(request, phone):
     except:
         pass
     return JsonResponse({"result": True})
+
+
+def pay_debug(request, order_id):
+    header = "<h1>ЭТА СТРАНИЦА ЯКОБЫ ОПЛАТЫ, НАПРИМЕР enot'А</h1>"
+    try:
+        order = Purchase.objects.get(pk=order_id, paid=False)
+
+        order.paid = True
+        order.save()
+
+
+        return HttpResponse(header + "<p>Попав на эту страницу вы автоматически \"оплатили\" заказ</p>")
+
+    except:
+
+
+        return HttpResponse(header+"<p>Этот товар уже был оплачен или его не существует</p>")

@@ -9,6 +9,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.csrf import csrf_exempt
 
 from authorization.models import Settings, ConfirmationCode, Age, ContactWay, ConsultationParameters, Purchase
+from vkapi.utils import generate_and_send_login_code
 
 
 #
@@ -97,9 +98,9 @@ def pay_init(request):
             data = json.loads(request.body)
             phone = data.get('phone')
             email = data.get('email')
+            name = data.get('name')
             buy_type = data.get('buy_type')
             consultation_parameters = data.get('consultation_parameters', None)
-            cost = data.get('cost', 0.0)
 
             if not phone or not email:
                 return JsonResponse({'error': 'Phone and email are required'}, status=400)
@@ -112,7 +113,8 @@ def pay_init(request):
                     "password": User.objects.make_random_password(
                         20,
                         "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789@#&%$"
-                    )
+                    ),
+                    'first_name': name
                 }
             )
 
@@ -137,7 +139,9 @@ def pay_init(request):
                     purchase=purchase
                 )
 
-            return JsonResponse({'message': 'Purchase created successfully'}, status=201)
+            settings = Settings.objects.first()
+
+            return JsonResponse({'message': 'Purchase created successfully', "url": f"{settings.pay_url}pay/{purchase.id}"}, status=201)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
@@ -145,3 +149,35 @@ def pay_init(request):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
+def login_init(request, phone):
+    phone = phone.replace(" ", "")
+    try:
+        user = User.objects.get(pk=phone)
+        settings = Settings.objects.first()
+
+        #TODO Стоит ли здесь делать проверку что пользователь купил товар
+
+        if "without_vk" in user.username:
+            return JsonResponse({
+                'result': True,
+                "message": "Получите временный код для входа и следуйте инструкциям в",
+                "bot_url": settings.vk_chat_url})
+
+        try:
+
+            token = settings.vk_token
+            vk_session = vk_api.VkApi(token=token)
+            api = vk_session.get_api()
+
+            generate_and_send_login_code(api, user)
+        except Exception as e:
+            print(e)
+
+        return JsonResponse({'result': True,
+                             'message': "Получите временный код для входа в",
+                             "bot_url": settings.vk_chat_url})
+
+    except Exception as e:
+        pass
+    return JsonResponse({'result': False, "message": "Неверный логин"})

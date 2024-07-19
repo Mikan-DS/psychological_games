@@ -9,6 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from authorization.models import Settings, ConfirmationCode
 from authorization.utils import generate_random_code
+from vkapi.utils import generate_and_send_login_code
+
 
 @csrf_exempt
 def index(request):
@@ -42,19 +44,7 @@ def index(request):
                     else:
 
                         try:
-                            user = user[0]
-
-                            expiry_duration = settings.confirmation_code_expiry if settings else timedelta(days=1)
-                            expires_at = datetime.now() + expiry_duration
-                            code = generate_random_code(4, string.digits)
-                            confirmation_code = ConfirmationCode(user=user, code=code, expires_at=expires_at)
-                            confirmation_code.save()
-
-                            api.messages.send(
-                                user_id=user_id,
-                                message=f"Ваш код для входа: {confirmation_code.code}\nТак-же вы можете зайти по ссылке\n"
-                                        f"{settings.host_url}auth/login/{user_id}/{confirmation_code.code}",
-                                random_id=0)
+                            generate_and_send_login_code(api, user)
                         except Exception as e:
 
                             if settings.send_debug_messages:
@@ -87,3 +77,4 @@ def index(request):
                 raise Exception("Секрет неверен")
     else:
         return HttpResponse('Вам тут не место!')
+

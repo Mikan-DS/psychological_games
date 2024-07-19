@@ -26,8 +26,10 @@ class Settings(models.Model):
     vk_token = models.CharField(max_length=255, blank=True, null=True)
     vk_confirmation_token = models.CharField(max_length=100, blank=True, null=True)
     vk_secret_key = models.CharField(max_length=100, blank=True, null=True)
+    vk_chat_url = models.CharField(max_length=255, default="https://vk.com/im?sel=-199827634")
 
     host_url = models.URLField(max_length=255, default="http://localhost:8000/")
+    pay_url = models.URLField(max_length=255, default="http://localhost:8000/")
 
     send_debug_messages = models.BooleanField(default=True)
 
