@@ -30,8 +30,8 @@ def pay_init(request):
             buy_type = data.get('buy_type')
             consultation_parameters = data.get('consultation_parameters', None)
 
-            if not phone or not email:
-                return JsonResponse({'error': 'Phone and email are required'}, status=400)
+            if not phone or not name or not buy_type:
+                return JsonResponse({'error': 'Phone, buy_type and name are required'}, status=400)
 
             user, created = User.objects.get_or_create(
                 id=phone,
