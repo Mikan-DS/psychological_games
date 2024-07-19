@@ -1,5 +1,5 @@
-import os
 import glob
+import os
 import shutil
 
 if os.path.basename(os.getcwd()) != 'psychological_games_frontend':
@@ -22,8 +22,5 @@ os.makedirs("../static/frontend/css/", exist_ok=True)
 for file in js_files:
     shutil.copy(file, '../static/frontend/css/psychological_games-app.css')
 
-
-
 shutil.rmtree("../static/media", ignore_errors=True)
 shutil.copytree("build/static/media", "../static/media", dirs_exist_ok=True)
-

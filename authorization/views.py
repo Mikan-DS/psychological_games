@@ -1,78 +1,127 @@
-from django.contrib.auth.models import User
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+import json
+
 import vk_api
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login, authenticate
-from authorization.models import Settings, ConfirmationCode
+from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
+
+from authorization.models import Settings, ConfirmationCode, Age, ContactWay, ConsultationParameters, Purchase
+from vkapi.utils import generate_and_send_login_code
 
 
-def login_view(request):
-    if request.method == 'POST':
-        code_input = request.POST.get('code')
-        try:
-            confirmation_code = ConfirmationCode.objects.get(code=code_input, is_used=False)
-            if confirmation_code.is_active:
-                confirmation_code.is_used = True
-                confirmation_code.save()
-                login(request, confirmation_code.user)
-                return redirect('app')  # Redirect to your app's main view
-            else:
-                return render(request, 'authorization/login.html', {'error': 'Код неверен или истёк.'})
-        except ConfirmationCode.DoesNotExist:
-            return render(request, 'authorization/login.html', {'error': 'Код неверен или истёк.'})
-    return render(request, 'authorization/login.html')
-
-def login_with_code(request, user_id, code):
+def logoutView(request):
     try:
-        user = User.objects.get(username=user_id)
-        confirmation_code = ConfirmationCode.objects.get(code=code, user=user, is_used=False)
-        if confirmation_code.is_active:
-            confirmation_code.is_used = True
-            confirmation_code.save()
-            login(request, confirmation_code.user)
-            return redirect('app')  # Redirect to your app's main view
-        else:
-            return render(request, 'authorization/login.html', {'error': 'Код неверен или истёк.', "user": user.first_name or "Имени нет"})
-    except ConfirmationCode.DoesNotExist:
-        return render(request, 'authorization/login.html', {'error': 'Код неверен или истёк.', "user": "Unknown"})
+        logout(request)
+        return JsonResponse({'success': True})
+    except:
+        return JsonResponse({'success': False})
 
 
-
-def register(request):
+@csrf_exempt
+def pay_init(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            try:
-                settings = Settings.objects.first()
-                token = settings.vk_token
-                vk_session = vk_api.VkApi(token=token)
-                api = vk_session.get_api()
+        try:
+            data = json.loads(request.body)
+            phone = data.get('phone')
+            email = data.get('email')
+            name = data.get('name')
+            buy_type = data.get('buy_type')
+            consultation_parameters = data.get('consultation_parameters', None)
 
-                username = form.cleaned_data.get('username')
-                vk_user = api.users.get(user_ids=(username,))
+            if not phone or not email:
+                return JsonResponse({'error': 'Phone and email are required'}, status=400)
 
-                if not vk_user:
-                    return HttpResponse("Пользователь ВК не найден!")
-                vk_user = vk_user[0]
-                user_id = str(vk_user["id"])
+            user, created = User.objects.get_or_create(
+                id=phone,
+                defaults={
+                    'username': "without_vk_" + phone,
+                    'email': email,
+                    "password": User.objects.make_random_password(
+                        20,
+                        "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789@#&%$"
+                    ),
+                    'first_name': name
+                }
+            )
 
-                # Проверка наличия пользователя с таким же user_id
-                if User.objects.filter(username=user_id).exists():
-                    return HttpResponse("Пользователь с таким VK ID уже существует!")
+            if not created:
+                return JsonResponse({'error': "Уже куплено"}, status=500)
 
-                # Создание нового пользователя с user_id в качестве имени пользователя
-                user = form.save(commit=False)
-                user.username = user_id
-                user.save()
+            purchase = Purchase.objects.create(
+                item_type=buy_type,
+                user=user,
+                cost=3750 if buy_type == 'game' else 7900,
+                paid=False
+            )
 
-                password = form.cleaned_data.get('password1')
-                user = authenticate(username=user_id, password=password)
-                return redirect('https://vk.com/im?sel=-199827634&ref_source=ПолучитьКод')
+            if buy_type == "game_consultation" and consultation_parameters:
+                age = Age.objects.get(value=consultation_parameters['age'])
+                contact_way = ContactWay.objects.get(method=consultation_parameters['contact_way'])
+                ConsultationParameters.objects.create(
+                    question=consultation_parameters['custom_question'],
+                    age=age,
+                    gender=consultation_parameters['gender'],
+                    contact_way=contact_way,
+                    purchase=purchase
+                )
 
-            except:
-                return HttpResponse("Произошла ошибка!")
+            settings = Settings.objects.first()
 
+            return JsonResponse(
+                {'message': 'Purchase created successfully', "url": f"{settings.pay_url}pay/{purchase.id}"}, status=201)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
     else:
-        form = UserCreationForm()
-    return render(request, 'authorization/register.html', {'form': form})
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def login_init(request, phone):
+    phone = phone.replace(" ", "")
+    try:
+        user = User.objects.get(pk=phone)
+        settings = Settings.objects.first()
+
+        if "without_vk" in user.username:
+            return JsonResponse({
+                'result': True,
+                "message": "Получите временный код для входа и следуйте инструкциям в",
+                "bot_url": settings.vk_chat_url})
+
+        try:
+
+            token = settings.vk_token
+            vk_session = vk_api.VkApi(token=token)
+            api = vk_session.get_api()
+
+            generate_and_send_login_code(api, user)
+        except Exception as e:
+            print(e)
+
+        return JsonResponse({'result': True,
+                             'message': "Получите временный код для входа в",
+                             "bot_url": settings.vk_chat_url})
+
+    except Exception as e:
+        pass
+    return JsonResponse({'result': False, "message": "Неверный логин"})
+
+
+def login_code(request, phone, code):
+    try:
+        user = User.objects.get(pk=phone)
+
+        confirmation_code = ConfirmationCode.objects.get(code=code, user=user)
+
+        assert confirmation_code.is_active
+
+        login(request, user)
+
+        return redirect("/")
+
+    except Exception as e:
+
+        return redirect(f"/?login={phone}&code={code}")
