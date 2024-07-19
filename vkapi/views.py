@@ -35,6 +35,12 @@ def index(request):
                         by_ref_source = True
                         user = user.first()
 
+                write_message(
+                    api,
+                    user_id,
+                    f"Способ захода {by_ref_source} {user}"
+                )
+
                 in_cause_phone = (data['object']['body']
                                   .replace('+', '')
                                   .replace("(", "")
@@ -58,6 +64,13 @@ def index(request):
                                 f"Если вы действительно оплачивали игру и указывали этот "
                                 f"номер телефона при регистрации - обратитесь в поддержку."
                             )
+
+                if by_ref_source:
+                    write_message(
+                        api,
+                        user_id,
+                        f"Проблема {by_ref_source} "+str(by_ref_source and "without_vk" in user.username)+f'{"without_vk" in user.username}'
+                    )
 
                 if by_ref_source and "without_vk" in user.username:
                     user.username = user_id
