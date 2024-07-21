@@ -130,14 +130,14 @@ MEDIA_ROOT = BASE_DIR /'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:8000',
-    'https://psygaonlin.pythonanywhere.com',
-    'http://psygames.online',
-    'https://psygames.online',
-]
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://localhost:8000',
+#     'https://psygaonlin.pythonanywhere.com',
+#     'http://psygames.online',
+#     'https://psygames.online',
+# ]
 
 CORS_ALLOW_CREDENTIALS = True
 
