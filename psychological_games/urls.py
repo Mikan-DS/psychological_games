@@ -37,6 +37,15 @@ urlpatterns = ([
     path('tik/relax', RedirectView.as_view(url="/games/relax")),
     path('tik/situations1', RedirectView.as_view(url="/games/situations1")),
     path('tik/situations2', RedirectView.as_view(url="/games/situations2")),
+    path('bild190cjvveb/', RedirectView.as_view(url="/games/bild190cjvveb")),
+    path('Cooljungle-1.60-web/', RedirectView.as_view(url="/games/cooljungle-160-web")),
+    path('cooljungle160gp/', RedirectView.as_view(url="/games/cooljungle-160-gp")),
+    path('test3archetypes2/', RedirectView.as_view(url="/games/test3archetypes2")),
+    path('tik/posobie-android/', RedirectView.as_view(url="/games/posobie-android")),
+    path('tik/posobie-pk/', RedirectView.as_view(url="/games/posobie-pk")),
+    path('tik/relax/', RedirectView.as_view(url="/games/relax")),
+    path('tik/situations1/', RedirectView.as_view(url="/games/situations1")),
+    path('tik/situations2/', RedirectView.as_view(url="/games/situations2")),
 ])
 
 if settings.DEBUG:
