@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'frontend.apps.FrontendConfig',
     'vkapi.apps.VkapiConfig',
-    'authorization.apps.AuthorizationConfig'
+    'authorization.apps.AuthorizationConfig',
+    'games.apps.GamesConfig'
 ]
 
 MIDDLEWARE = [
@@ -47,6 +48,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -119,18 +121,24 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
+MEDIA_URL='/media/'
+MEDIA_ROOT = BASE_DIR /'media'
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:8000',
-    'https://psygaonlin.pythonanywhere.com',
-    'http://psygames.online/',
-    'https://psygames.online/',
-]
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://localhost:8000',
+#     'https://psygaonlin.pythonanywhere.com',
+#     'http://psygames.online',
+#     'https://psygames.online',
+# ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
