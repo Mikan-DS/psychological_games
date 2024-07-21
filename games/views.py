@@ -13,7 +13,7 @@ def game(request, game_url):
 
         index = GameFile.objects.get(game=game, is_index=True)
 
-        return render(request, 'games/index.html', {'game': index.file.url})
+        return render(request, 'games/index.html', {'game': index.file.url, 'game_name': game.title})
     except GameFile.DoesNotExist:
         return HttpResponse("Такой игры нет", status=404)
     except Game.DoesNotExist:
