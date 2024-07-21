@@ -9,13 +9,18 @@ from django.db.models.signals import post_save, pre_save, post_delete
 
 
 class Game(models.Model):
-    title = models.CharField(max_length=200, unique=True)
-    archive = models.FileField(upload_to='games/')
-    url = models.SlugField(max_length=200)
-    # index = models.FileField(upload_to='games/misc/', null=True, blank=True)
+    title = models.CharField(max_length=200, unique=True, verbose_name="Название")
+    archive = models.FileField(upload_to='games/', verbose_name="Архив")
+    url = models.SlugField(max_length=200, verbose_name="URL")
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = "Игра"
+        verbose_name_plural = "Игры"
+        ordering = ['title']
+
 
 class GameFile(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
