@@ -46,32 +46,32 @@ def unpack_archive(sender, instance: Game, **kwargs):
             zip_ref.extractall(extract_path)
 
 
-        if not GameFile.objects.filter(game=instance).exists():
-            # Проверка наличия index.html
-            index_html_path = None
+        GameFile.objects.filter(game=instance).delete()
+        # Проверка наличия index.html
+        index_html_path = None
 
-            for root, dirs, files in os.walk(extract_path):
-                if index_html_path:
-                    pass
-                elif 'index.html' in files:
-                    index_html_path = os.path.join(root, 'index.html')
+        for root, dirs, files in os.walk(extract_path):
+            if index_html_path:
+                pass
+            elif 'index.html' in files:
+                index_html_path = os.path.join(root, 'index.html')
 
-                elif len(dirs) == 1 and 'index.html' in os.listdir(os.path.join(root, dirs[0])):
-                    index_html_path = os.path.join(root, dirs[0], 'index.html')
-                for file in files:
-                    file_html_path = os.path.join(root, file)
-                    gamefile = GameFile(game=instance, is_index=file_html_path==index_html_path)
-                    with open(file_html_path, 'rb') as file_html:
-                        gamefile.file.save(
+            elif len(dirs) == 1 and 'index.html' in os.listdir(os.path.join(root, dirs[0])):
+                index_html_path = os.path.join(root, dirs[0], 'index.html')
+            for file in files:
+                file_html_path = os.path.join(root, file)
+                gamefile = GameFile(game=instance, is_index=file_html_path==index_html_path)
+                with open(file_html_path, 'rb') as file_html:
+                    gamefile.file.save(
 
-                            os.path.join(
-                                root.replace(os.path.join(os.path.dirname(archive_path), "unpacking"), ""),
-                                file),
-                            File(
-                                file_html,
-                                file
-                            ))
-            shutil.rmtree(extract_path)
+                        os.path.join(
+                            root.replace(os.path.join(os.path.dirname(archive_path), "unpacking"), "."),
+                            file),
+                        File(
+                            file_html,
+                            file
+                        ))
+        shutil.rmtree(extract_path)
 
 
 
