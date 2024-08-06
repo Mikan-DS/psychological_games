@@ -19,7 +19,7 @@ css_files = glob.glob('build/static/css/*.css')
 
 os.makedirs("../static/frontend/css/", exist_ok=True)
 # Копируем файлы в нужную директорию
-for file in js_files:
+for file in css_files:
     shutil.copy(file, '../static/frontend/css/psychological_games-app.css')
 
 shutil.rmtree("../static/media", ignore_errors=True)
