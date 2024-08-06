@@ -10,4 +10,5 @@ urlpatterns = [
     path('pay/init', views.pay_init, name='pay_init'),
     path('login/init/<str:phone>', views.login_init, name='login_init'),
     path('login/<str:phone>/<str:code>', views.login_code, name='login_code'),
+    path('nASoso3asjjabbfoosAJJ/', views.ASOD93jasOAndaskj, name='IIsanAndasoks'),
 ]
