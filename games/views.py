@@ -3,14 +3,14 @@ from django.http import HttpResponse, FileResponse
 from django.shortcuts import render
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 
-from games.models import Game
+from games.models import PostGame
 
 
 @xframe_options_sameorigin
 def game(request, game_url):
 
     try:
-        game_object: Game = Game.objects.get(url=game_url)
+        game_object: PostGame = PostGame.objects.get(url=game_url)
 
         assert game.has_access(request.user)
 
@@ -18,7 +18,7 @@ def game(request, game_url):
 
         return render(request, 'games/index.html', {'game': index_path, 'game_name': game_object.title})
 
-    except Game.DoesNotExist:
+    except PostGame.DoesNotExist:
         return HttpResponse("Такой игры нет", status=404)
     except AssertionError:
         return HttpResponse("У вас нет прав на эту игру", status=403)
@@ -28,13 +28,13 @@ def game(request, game_url):
 
 def game_file(request, game_url, file_url):
     try:
-        game_object: Game = Game.objects.get(url=game_url)
+        game_object: PostGame = PostGame.objects.get(url=game_url)
 
         assert game_object.has_access(request.user)
 
         return FileResponse(open(f"{settings.MEDIA_ROOT}/games/{game_url}/{file_url}", "rb"))
 
-    except Game.DoesNotExist:
+    except PostGame.DoesNotExist:
         return HttpResponse("Такой игры нет", status=404)
     except AssertionError:
         return HttpResponse("У вас нет прав на эту игру", status=403)
