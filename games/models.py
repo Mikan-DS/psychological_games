@@ -10,12 +10,12 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save, post_delete
 
 
+# class Game(models.Model):
+#     title = models.CharField(max_length=200, unique=True, verbose_name="Название")
+#     archive = models.FileField(upload_to='games/', verbose_name="Архив", null=True, blank=True)
+#     reload = models.BooleanField(default=False, verbose_name="Перезагрузить с диска сервера (unpacking/Название игры)")
+#     url = models.SlugField(max_length=200, verbose_name="URL")
 class Game(models.Model):
-    title = models.CharField(max_length=200, unique=True, verbose_name="Название")
-    archive = models.FileField(upload_to='games/', verbose_name="Архив", null=True, blank=True)
-    reload = models.BooleanField(default=False, verbose_name="Перезагрузить с диска сервера (unpacking/Название игры)")
-    url = models.SlugField(max_length=200, verbose_name="URL")
-class PostGame(models.Model):
 
     ACCESS_CHOICES = [
         (1, 'Персонал'),
@@ -49,8 +49,8 @@ class PostGame(models.Model):
             return True
 
 
-@receiver(post_delete, sender=PostGame)
-def delete_archive_on_delete(sender, instance: PostGame, **kwargs):
+@receiver(post_delete, sender=Game)
+def delete_archive_on_delete(sender, instance: Game, **kwargs):
     # Удалить распакованную папку
     extract_path = os.path.join(settings.MEDIA_ROOT, 'games', instance.folder)
     if os.path.exists(extract_path):
