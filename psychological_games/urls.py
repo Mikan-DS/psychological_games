@@ -46,8 +46,7 @@ urlpatterns = ([
     path('tik/relax/', RedirectView.as_view(url="/games/relax")),
     path('tik/situations1/', RedirectView.as_view(url="/games/situations1")),
     path('tik/situations2/', RedirectView.as_view(url="/games/situations2")),
-])
+])+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

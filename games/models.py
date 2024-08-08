@@ -3,6 +3,7 @@ import shutil
 import zipfile
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.files import File
 from django.db import models
 from django.dispatch import receiver
@@ -14,6 +15,22 @@ class Game(models.Model):
     archive = models.FileField(upload_to='games/', verbose_name="Архив", null=True, blank=True)
     reload = models.BooleanField(default=False, verbose_name="Перезагрузить с диска сервера (unpacking/Название игры)")
     url = models.SlugField(max_length=200, verbose_name="URL")
+class PostGame(models.Model):
+
+    ACCESS_CHOICES = [
+        (1, 'Персонал'),
+        (2, 'Купившие игру (пока == авторизован)'),
+        (3, 'Авторизован'),
+        (4, 'Все'),
+    ]
+
+    id = models.AutoField(primary_key=True, verbose_name="ID")
+    title = models.CharField(max_length=200, verbose_name="Название")
+    url = models.SlugField(max_length=200, verbose_name="URL", unique=True)
+    folder = models.CharField(max_length=200, verbose_name="Папка на сервере", unique=True)
+    access = models.IntegerField(choices=ACCESS_CHOICES, verbose_name="Доступ", default=1)
+
+
 
     def __str__(self):
         return self.title
@@ -23,124 +40,19 @@ class Game(models.Model):
         verbose_name_plural = "Игры"
         ordering = ['title']
 
-
-class GameFile(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='games/', null=True, blank=True)
-    is_index = models.BooleanField(default=False)
-
-
-@receiver(post_save, sender=Game)
-def unpack_archive(sender, instance: Game, **kwargs):
-    if instance.archive:
-        archive_path = instance.archive.path
-        extract_path = os.path.join(os.path.dirname(archive_path), "unpacking", instance.title)
-
-        # Удалить папку, если она уже существует
-        if os.path.exists(extract_path):
-            shutil.rmtree(extract_path)
-        if os.path.exists(os.path.join(os.path.dirname(archive_path), instance.title)):
-            shutil.rmtree(os.path.join(os.path.dirname(archive_path), instance.title))
-
-        # Создать папку и распаковать архив
-        os.makedirs(extract_path)
-        with zipfile.ZipFile(archive_path, 'r') as zip_ref:
-            zip_ref.extractall(extract_path)
+    def has_access(self, user: User) -> bool:
+        if self.access == 1:
+            return user.is_staff
+        elif self.access in (2, 3):
+            return user.is_authenticated
+        else:
+            return True
 
 
-        GameFile.objects.filter(game=instance).delete()
-        # Проверка наличия index.html
-        index_html_path = None
-
-        for root, dirs, files in os.walk(extract_path):
-            if index_html_path:
-                pass
-            elif 'index.html' in files:
-                index_html_path = os.path.join(root, 'index.html')
-
-            elif len(dirs) == 1 and 'index.html' in os.listdir(os.path.join(root, dirs[0])):
-                index_html_path = os.path.join(root, dirs[0], 'index.html')
-            for file in files:
-                file_html_path = os.path.join(root, file)
-                gamefile = GameFile(game=instance, is_index=file_html_path==index_html_path)
-                with open(file_html_path, 'rb') as file_html:
-                    gamefile.file.save(
-
-                        os.path.join(
-                            root.replace(os.path.join(os.path.dirname(archive_path), "unpacking"), "."),
-                            file),
-                        File(
-                            file_html,
-                            file
-                        ))
-        shutil.rmtree(extract_path)
-
-    elif instance.reload:
-
-        archive_path = os.path.join(settings.MEDIA_ROOT, instance._meta.get_field('archive').upload_to)
-        extract_path = os.path.join(os.path.dirname(archive_path), "unpacking", instance.title)
-
-        GameFile.objects.filter(game=instance).delete()
-        # Проверка наличия index.html
-        index_html_path = None
-
-        for root, dirs, files in os.walk(extract_path):
-            if index_html_path:
-                pass
-            elif 'index.html' in files:
-                index_html_path = os.path.join(root, 'index.html')
-
-            elif len(dirs) == 1 and 'index.html' in os.listdir(os.path.join(root, dirs[0])):
-                index_html_path = os.path.join(root, dirs[0], 'index.html')
-            for file in files:
-                file_html_path = os.path.join(root, file)
-                gamefile = GameFile(game=instance, is_index=file_html_path==index_html_path)
-                with open(file_html_path, 'rb') as file_html:
-                    gamefile.file.save(
-
-                        os.path.join(
-                            root.replace(os.path.join(os.path.dirname(archive_path), "unpacking"), "."),
-                            file),
-                        File(
-                            file_html,
-                            file
-                        ))
-        shutil.rmtree(extract_path)
-        instance.reload = False
-        instance.save()
-
-
-
-
-@receiver(pre_save, sender=Game)
-def delete_old_archive(sender, instance, **kwargs):
-    if instance.pk:
-        try:
-            old_instance = Game.objects.get(pk=instance.pk)
-            archive_path = old_instance.archive.path
-            extract_path = os.path.join(os.path.dirname(archive_path), old_instance.title)
-            new_extract_path = os.path.join(os.path.dirname(archive_path), instance.title)
-            if extract_path != new_extract_path:
-                if os.path.exists(new_extract_path):
-                    shutil.rmtree(new_extract_path)
-                GameFile.objects.filter(game=instance).delete()
-                shutil.move(extract_path, os.path.join(os.path.dirname(archive_path), "unpacking", instance.title))
-            if archive_path != instance.archive.path:
-                old_instance.archive.delete(save=False)
-
-
-        except Game.DoesNotExist:
-            pass
-        except Exception as e:
-            pass
-
-@receiver(post_delete, sender=Game)
-def delete_archive_on_delete(sender, instance, **kwargs):
-
+@receiver(post_delete, sender=PostGame)
+def delete_archive_on_delete(sender, instance: PostGame, **kwargs):
     # Удалить распакованную папку
-    extract_path = os.path.join(os.path.dirname(instance.archive.path), instance.title)
+    extract_path = os.path.join(settings.MEDIA_ROOT, 'games', instance.folder)
     if os.path.exists(extract_path):
         shutil.rmtree(extract_path)
 
-    if instance.archive:
-        instance.archive.delete(save=False)
