@@ -12,7 +12,7 @@ def game(request, game_url):
     try:
         game_object: Game = Game.objects.get(url=game_url)
 
-        assert game.has_access(request.user)
+        assert game_object.has_access(request.user)
 
         index_path = f"/games/files/{game_url}/index.html"
 
