@@ -35,7 +35,7 @@ def game_file(request, game_url, file_url):
 
         assert game_object.has_access(request.user)
 
-        return FileResponse(open(f"{settings.MEDIA_ROOT}/games/{game_url}/{file_url}", "rb"))
+        return FileResponse(open(f"{settings.MEDIA_ROOT}/games/{game_object.folder}/{file_url}", "rb"))
 
     except Game.DoesNotExist:
         return HttpResponse("Такой игры нет", status=404)
