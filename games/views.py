@@ -23,7 +23,10 @@ def game(request, game_url):
     except AssertionError:
         return HttpResponse("У вас нет прав на эту игру", status=403)
     except Exception as e:
-        return HttpResponse("Произошла ошибка", status=500)
+        if request.user.is_superuser:
+            return HttpResponse(f"Произошла ошибка {e}", status=500)
+        else:
+            return HttpResponse(f"Произошла ошибка", status=500)
 
 
 def game_file(request, game_url, file_url):
