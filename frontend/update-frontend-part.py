@@ -25,7 +25,7 @@ shutil.rmtree("../static/frontend/css/", ignore_errors=True)
 os.makedirs("../static/frontend/css/", exist_ok=True)
 # Копируем файлы в нужную директорию
 css_file = [i for i in css_files if "main" in os.path.basename(i)][0]
-shutil.copy(js_file, f'../static/frontend/css/{os.path.basename(css_file)}')
+shutil.copy(css_file, f'../static/frontend/css/{os.path.basename(css_file)}')
 
 shutil.rmtree("../static/media", ignore_errors=True)
 shutil.copytree("build/static/media", "../static/media", dirs_exist_ok=True)
