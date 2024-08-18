@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Классные джунгли</title>
+    {% if enot %}
+    	<meta name="enot" content="{{ enot_code }}" />
+    {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script defer="defer" src="{% static 'frontend/js/main.831e28f9.js' %}"></script>
     <link rel="stylesheet" href="{% static 'frontend/css/main.6239e40b.css' %}">

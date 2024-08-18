@@ -2,12 +2,15 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
-from authorization.models import Purchase
+from authorization.models import Purchase, Settings
 
 
 # Create your views here.
 def app(request, project_id=None):
-    return render(request, "frontend/app.html")
+
+    settings = Settings.objects.first()
+
+    return render(request, "frontend/app.html", context={"enot": settings.enot_code, "enot_code": settings.enot_code})
 
 
 def get_user(request):

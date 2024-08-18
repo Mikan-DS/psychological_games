@@ -58,6 +58,8 @@ class Settings(models.Model):
         verbose_name="Ссылка сайта оплаты"
     )
 
+    enot_code = models.CharField(max_length=10, verbose_name="Код енота", null=True, blank=True)
+
     send_debug_messages = models.BooleanField(default=True)
 
     class Meta:
