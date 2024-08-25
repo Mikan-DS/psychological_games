@@ -32,3 +32,7 @@ shutil.copytree("build/static/media", "../static/media", dirs_exist_ok=True)
 
 with open("../templates/frontend/app.html", "w", encoding="UTF-8") as file:
     file.write(template % (os.path.basename(js_file), os.path.basename(css_file)))
+
+os.chdir('../static')
+os.system('git add ./frontend/')
+os.system('git add ./media/')
