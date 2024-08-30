@@ -48,7 +48,7 @@ def pay_init(request):
                 }
             )
 
-            if not created:
+            if Purchase.objects.filter(user=user, paid=True).exists():
                 return JsonResponse({'error': "Уже куплено"}, status=500)
 
             purchase = Purchase.objects.create(
