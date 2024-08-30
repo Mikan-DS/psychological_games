@@ -88,7 +88,8 @@ def pay_init(request):
                 "description": "Игра" if buy_type == 'game' else "Игра и консультация",
                 "metadata": {
                     "order_id": str(purchase.id)
-                }
+                },
+                "test": True
             })
 
             purchase.yookassa_order_id = payment["id"]
