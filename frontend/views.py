@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from yookassa import Payment
 
 from authorization.models import Purchase, Settings
 
@@ -40,15 +41,13 @@ def checknumber(request, phone):
 
 
 def pay_debug(request, order_id):
-    header = "<h1>ЭТА СТРАНИЦА ЯКОБЫ ОПЛАТЫ, НАПРИМЕР enot'А</h1>"
     try:
         order = Purchase.objects.get(pk=order_id, paid=False)
 
-        order.paid = True
-        order.save()
-
-        return HttpResponse(header + "<p>Попав на эту страницу вы автоматически \"оплатили\" заказ</p>")
-
-    except:
-
-        return HttpResponse(header + "<p>Этот товар уже был оплачен или его не существует</p>")
+        payment = Payment.find_one(order.yookassa_order_id)
+        if payment["paid"]:
+            order.paid = True
+            order.save()
+        return HttpResponseRedirect("app")
+    except Exception as e:
+        return HttpResponseRedirect("app")

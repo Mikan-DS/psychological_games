@@ -58,7 +58,14 @@ class Settings(models.Model):
         verbose_name="Ссылка сайта оплаты"
     )
 
-    enot_code = models.CharField(max_length=10, verbose_name="Код енота", null=True, blank=True)
+    enot_code = models.CharField(max_length=10, verbose_name="Enot: Код", null=True, blank=True)
+
+    yookassa_account_id = models.IntegerField(null=True, blank=True, verbose_name="Yookassa: Идентификатор магазина")
+    yookassa_secret_key = models.CharField(
+        max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="Yookassa: Секретный ключ")
 
     send_debug_messages = models.BooleanField(default=True)
 
@@ -72,6 +79,12 @@ class Settings(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk and Settings.objects.exists():
             raise ValueError('Настройка уникальна, больше создавать нельзя!')
+
+        from yookassa import Configuration
+
+        Configuration.account_id = self.yookassa_account_id
+        Configuration.secret_key = self.yookassa_secret_key
+
         return super(Settings, self).save(*args, **kwargs)
 
 
@@ -85,6 +98,8 @@ class Purchase(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Стоимость")
     paid = models.BooleanField(default=False, verbose_name="Оплачено")
+
+    yookassa_order_id = models.CharField(max_length=255, verbose_name="ID платежа yookassa", null=True, blank=True)
 
     def __str__(self):
         return f"{self.get_item_type_display()} от {self.user} за {self.cost} - {'Оплачено' if self.paid else 'Не оплачено'}"
