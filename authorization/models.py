@@ -80,11 +80,6 @@ class Settings(models.Model):
         if not self.pk and Settings.objects.exists():
             raise ValueError('Настройка уникальна, больше создавать нельзя!')
 
-        from yookassa import Configuration
-
-        Configuration.account_id = self.yookassa_account_id
-        Configuration.secret_key = self.yookassa_secret_key
-
         return super(Settings, self).save(*args, **kwargs)
 
 

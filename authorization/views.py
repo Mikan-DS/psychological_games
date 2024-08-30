@@ -71,6 +71,9 @@ def pay_init(request):
 
             settings = Settings.objects.first()
 
+            Configuration.account_id = settings.yookassa_account_id
+            Configuration.secret_key = settings.yookassa_secret_key
+
             # YOOKASSA
             payment = Payment.create({
                 "amount": {
