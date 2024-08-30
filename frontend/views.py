@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from yookassa import Payment, Configuration
 
 from authorization.models import Purchase, Settings
 
@@ -32,7 +33,8 @@ def get_user(request):
 
 def checknumber(request, phone):
     try:
-        if User.objects.get(pk=int(phone.replace(" ", ""))):
+        user = User.objects.get(pk=int(phone.replace(" ", "")))
+        if user and Purchase.objects.filter(user=user, paid=True).exists():
             return JsonResponse({"result": False})
     except:
         pass
@@ -40,15 +42,18 @@ def checknumber(request, phone):
 
 
 def pay_debug(request, order_id):
-    header = "<h1>ЭТА СТРАНИЦА ЯКОБЫ ОПЛАТЫ, НАПРИМЕР enot'А</h1>"
     try:
         order = Purchase.objects.get(pk=order_id, paid=False)
 
-        order.paid = True
-        order.save()
+        settings = Settings.objects.first()
 
-        return HttpResponse(header + "<p>Попав на эту страницу вы автоматически \"оплатили\" заказ</p>")
+        Configuration.account_id = settings.yookassa_account_id
+        Configuration.secret_key = settings.yookassa_secret_key
 
-    except:
-
-        return HttpResponse(header + "<p>Этот товар уже был оплачен или его не существует</p>")
+        payment = Payment.find_one(order.yookassa_order_id)
+        if payment["paid"]:
+            order.paid = True
+            order.save()
+        return HttpResponseRedirect("/")
+    except Exception as e:
+        return HttpResponseRedirect("/")

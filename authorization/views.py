@@ -10,6 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from authorization.models import Settings, ConfirmationCode, Age, ContactWay, ConsultationParameters, Purchase
 from vkapi.utils import generate_and_send_login_code
 
+from yookassa import Configuration, Payment
+
 
 def logoutView(request):
     try:
@@ -46,7 +48,7 @@ def pay_init(request):
                 }
             )
 
-            if not created:
+            if Purchase.objects.filter(user=user, paid=True).exists():
                 return JsonResponse({'error': "Уже куплено"}, status=500)
 
             purchase = Purchase.objects.create(
@@ -69,8 +71,31 @@ def pay_init(request):
 
             settings = Settings.objects.first()
 
+            Configuration.account_id = settings.yookassa_account_id
+            Configuration.secret_key = settings.yookassa_secret_key
+
+            # YOOKASSA
+            payment = Payment.create({
+                "amount": {
+                    "value": f"{purchase.cost}.00",
+                    "currency": "RUB"
+                },
+                "confirmation": {
+                    "type": "redirect",
+                    "return_url": f"{settings.pay_url}pay/{purchase.id}"
+                },
+                "capture": False,
+                "description": "Игра" if buy_type == 'game' else "Игра и консультация",
+                "metadata": {
+                    "order_id": str(purchase.id)
+                }
+            })
+
+            purchase.yookassa_order_id = payment["id"]
+            purchase.save()
+
             return JsonResponse(
-                {'message': 'Purchase created successfully', "url": f"{settings.pay_url}pay/{purchase.id}"}, status=201)
+                {'message': 'Purchase created successfully', "url": payment["confirmation"]["confirmation_url"]}, status=201)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
