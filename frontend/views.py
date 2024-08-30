@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from yookassa import Payment
+from yookassa import Payment, Configuration
 
 from authorization.models import Purchase, Settings
 
@@ -45,10 +45,15 @@ def pay_debug(request, order_id):
     try:
         order = Purchase.objects.get(pk=order_id, paid=False)
 
+        settings = Settings.objects.first()
+
+        Configuration.account_id = settings.yookassa_account_id
+        Configuration.secret_key = settings.yookassa_secret_key
+
         payment = Payment.find_one(order.yookassa_order_id)
         if payment["paid"]:
             order.paid = True
             order.save()
-        return HttpResponse(str(payment))
+        return HttpResponseRedirect("/")
     except Exception as e:
-        return HttpResponse(str(e))
+        return HttpResponseRedirect("/")
