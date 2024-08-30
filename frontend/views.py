@@ -49,6 +49,6 @@ def pay_debug(request, order_id):
         if payment["paid"]:
             order.paid = True
             order.save()
-        return HttpResponseRedirect("/")
+        return HttpResponse(str(payment))
     except Exception as e:
         return HttpResponseRedirect("/")
