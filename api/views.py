@@ -63,7 +63,7 @@ def update_from_old_type_database(request):
         return JsonResponse({"message": "you are not administrator"}, status=403)
 
     for param in ProjectParameter.objects.all():
-        if not TestResult.objects.filter(project_parameter=param).count() >= 1:
+        if not TestResultParameter.objects.filter(project_parameter=param).count() >= 1:
             param.delete()
 
     for result in TestResult.objects.all():
