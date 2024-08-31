@@ -70,7 +70,7 @@ def update_from_old_type_database(request):
             result.save()
 
         if result.project:
-            for parameter in result.parameters.objects.all():
+            for parameter in result.parameters.all():
                 if not parameter.project_parameter and parameter.name:
                     project_parameter, create = ProjectParameter.objects.get_or_create(
                         name=parameter,
