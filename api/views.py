@@ -81,4 +81,5 @@ def update_from_old_type_database(request):
                         project=result.project)
                     parameter.project_parameter = project_parameter
                     parameter.name = None
+                    parameter.save()
     return JsonResponse({"message": "success"}, status=200)
