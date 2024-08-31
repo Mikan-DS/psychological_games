@@ -1,55 +1,95 @@
-import typing
-from datetime import timedelta
-
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.datetime_safe import datetime
 
 
-class TestResult(models.Model):
-    project_name = models.CharField(max_length=80)
-    name = models.CharField(max_length=80)
-    ip = models.CharField(max_length=80)
-    end_time = models.DateTimeField(default=datetime.utcnow)
-    duration = models.IntegerField()
+class ProjectSummary(models.Model):
+    id = models.AutoField(primary_key=True, verbose_name="ID")
+    name = models.CharField(max_length=80, verbose_name="Название таблицы")
 
-    def __init__(self, *args, **kwargs):
-        result_parameters = kwargs.pop('result_parameters', None)
-        super().__init__(*args, **kwargs)
-        if result_parameters:
-            self.parameters: typing.Collection[TestResultParameter] = self.create_parameters(result_parameters)
-
-    def create_parameters(self, result_parameters):
-        parameters = []
-        pairs = result_parameters.split(',')
-        for pair in pairs:
-            pair = pair.strip()
-            if not pair:
-                continue
-            name, value = pair.split(':')
-            parameter = TestResultParameter(test_result=self, name=name.strip(), value=value.strip())
-            parameters.append(parameter)
-        return parameters
+    class Meta:
+        verbose_name = "Таблица"
+        verbose_name_plural = "Таблицы"
 
     def __str__(self):
-        return f'&lt;TestResult {self.project_name}&gt;'
+        return f"{self.name}"
 
-    def as_dict(self):
-        return {
-            'id': self.id,
-            'project_name': self.project_name,
-            'name': self.name,
-            'ip': self.ip,
-            'end_time': self.end_time,
-            'duration': str(timedelta(seconds=self.duration)),
-            'result_parameters': {
-                parameter.name: parameter.value for parameter in self.parameters.all()
-            }
-        }
+
+class ProjectParameter(models.Model):
+    id = models.AutoField(primary_key=True, verbose_name="ID")
+    name = models.CharField(max_length=80, verbose_name="Название поля")
+    project = models.ForeignKey(
+        ProjectSummary,
+        on_delete=models.CASCADE,
+        related_name='parameters',
+        related_query_name='parameters',
+        verbose_name="Проект"
+    )
+
+    class Meta:
+        verbose_name = "Поле"
+        verbose_name_plural = "Поля"
+
+    def __str__(self):
+        return f"{self.name} ({self.project.name})"
+
+
+class TestResult(models.Model):
+    id = models.AutoField(primary_key=True, verbose_name="ID")
+    project_name = models.CharField(max_length=80, verbose_name="(!Устаревшее) Название проекта", null=True, blank=True)
+    name = models.CharField(max_length=80, verbose_name="Имя указанное в игре", null=True, blank=True)
+    ip = models.CharField(max_length=15, verbose_name="IP адрес")
+    end_time = models.DateTimeField(default=datetime.utcnow, verbose_name="Дата отправки")
+    duration = models.IntegerField(default=0, verbose_name="Времени заняло")
+
+    project = models.ForeignKey(
+        ProjectSummary,
+        on_delete=models.CASCADE,
+        related_name='results',
+        related_query_name='results',
+        verbose_name="Таблица",
+        blank=True,
+        null=True
+    )
+
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             verbose_name="Пользователь",
+                             null=True, blank=True, related_name="test_results")
+
+    def __str__(self):
+        auth = False
+        if self.user:
+            auth = True
+        return (f'{self.project.name}: {self.user.first_name if auth else self.name}'
+                f' ({"Авторизован" if auth else "Неавторизован"})')
+
+    class Meta:
+        verbose_name = "Результат прохождения"
+        verbose_name_plural = "Результаты прохождений"
+
 
 class TestResultParameter(models.Model):
-    test_result = models.ForeignKey(TestResult, on_delete=models.CASCADE, related_name='parameters')
-    name = models.CharField(max_length=80)
-    value = models.CharField(max_length=500)
+    id = models.AutoField(primary_key=True, verbose_name="ID")
+    test_result = models.ForeignKey(TestResult,
+                                    on_delete=models.CASCADE,
+                                    related_name='parameters',
+                                    blank=True,
+                                    null=True
+                                    )
+    name = models.CharField(max_length=80, blank=True, null=True, verbose_name="(!Устаревшее) Название поля")
+    value = models.CharField(max_length=500, verbose_name="Значение")
+
+    project_parameter = models.ForeignKey(
+        ProjectParameter,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
-        return f'<TestResultParameter {self.name}>'
+        return f'{self.name or self.project_parameter.name} = {self.value}'
+
+    class Meta:
+        verbose_name = "Поле"
+        verbose_name_plural = "Поля"
