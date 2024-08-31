@@ -81,8 +81,8 @@ def export_to_excel(modeladmin, request, queryset):
     wb.save(response)
     return response
 
-def create_excel_sheet(workbook, project: ProjectSummary, queryset):
 
+def create_excel_sheet(workbook, project: ProjectSummary, queryset):
     project_results = queryset.filter(project=project)
 
     if project_results.count() < 1:
@@ -95,17 +95,27 @@ def create_excel_sheet(workbook, project: ProjectSummary, queryset):
 
     parameters = project.parameters.all()
 
-    headers = ['Имя', 'IP', 'Дата завершения', 'Время в игре'] + [param.name for param in parameters]
+    headers = ['Тариф', 'Номер телефона', 'Имя', 'IP', 'Дата завершения', 'Время в игре'] + [param.name for param in
+                                                                                             parameters]
     ws.append(headers)
     for i, _ in enumerate(headers):
-        ws.cell(row=1, column=i+1).font = Font(bold=True)
+        ws.cell(row=1, column=i + 1).font = Font(bold=True)
 
     for obj in project.results.all():
         end_time = obj.end_time.strftime("%Y-%m-%d %H:%M:%S")
-        row = [obj.name, obj.ip, end_time, str(timedelta(seconds=obj.duration))]
-        # parameters = {param.name: param.value for param in obj.parameters.all()}
-        # for param in ProjectParameter.objects.all():
-        #     row.append(parameters.get(param.name, ''))
+
+        tarif = 'Анонимный'
+        phone = ''
+        if obj.user:
+            tarif = "Зарегистрирован"
+            if obj.user.username.isnumeric():
+                phone = "+" + obj.user.username
+
+            purchases = obj.user.purchases.filter(paid=True)
+            if purchases:
+                tarif = purchases.last().item_type
+
+        row = [tarif, phone, obj.name, obj.ip, end_time, str(timedelta(seconds=obj.duration))]
         for param in parameters:
             obj_param = obj.parameters.filter(project_parameter=param)
             if obj_param:
@@ -118,13 +128,11 @@ def create_excel_sheet(workbook, project: ProjectSummary, queryset):
                 row.append("")
         ws.append(row)
 
-
     for col in ws.columns:
         max_length = 0
-        column = get_column_letter(col[0].column)  # Get the column name
-        # Since Openpyxl 2.6, the column name is  ".column_letter" as .column became the column number (1-based)
+        column = get_column_letter(col[0].column)
         for cell in col:
-            try:  # Necessary to avoid error on empty cells
+            try:
                 if len(str(cell.value)) > max_length:
                     max_length = len(cell.value)
             except:
@@ -133,8 +141,8 @@ def create_excel_sheet(workbook, project: ProjectSummary, queryset):
         ws.column_dimensions[column].width = adjusted_width
 
 
-
 export_to_excel.short_description = "Экспорт в Excel"
+
 
 class TestResultParameterInline(admin.TabularInline):
     model = TestResultParameter

@@ -89,7 +89,7 @@ class Purchase(models.Model):
         ('game_consultation', 'Игра и консультация'),
     ]
     item_type = models.CharField(max_length=255, choices=ITEM_TYPES, verbose_name="Тип")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name="purchases")
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Стоимость")
     paid = models.BooleanField(default=False, verbose_name="Оплачено")
 
