@@ -182,6 +182,3 @@ class TestResultAdmin(admin.ModelAdmin):
 
 admin.site.register(TestResult, TestResultAdmin)
 
-
-admin.site.register(ProjectParameter, admin.ModelAdmin)
-admin.site.register(TestResultParameter, admin.ModelAdmin)
