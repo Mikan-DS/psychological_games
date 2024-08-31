@@ -57,12 +57,24 @@ def add_result(request):
     except Exception as e:
         return HttpResponse(f"Exception: {repr(e)}", status=500)
 
-    #     if set(param.name for param in ts.parameters) != set(project.expected_parameters):
-    #         return JsonResponse({'error': 'Invalid test results'}, status=400)
-    #
-    #     ts.save()
-    #     return JsonResponse(ts.as_dict())
-    #
-    # except Exception as e:
-    #     import traceback
-    #     return JsonResponse({'error': 'Invalid test result'}, status=400)
+
+def update_from_old_type_database(self, request):
+    if not request.user.is_superuser:
+        return JsonResponse({"message": "you are not administrator"}, status=403)
+
+    for result in TestResult.objects.all():
+        if not result.project and result.project_name:
+            project, create = ProjectSummary.objects.get_or_create(name=result.project_name)
+            result.project = project
+            result.project_name = None
+            result.save()
+
+        if result.project:
+            for parameter in result.parameters:
+                if not parameter.project_parameter and parameter.name:
+                    project_parameter, create = ProjectParameter.objects.get_or_create(
+                        name=parameter,
+                        project=result.project)
+                    parameter.project_parameter = project_parameter
+                    parameter.name = None
+    return JsonResponse({"message": "success"}, status=200)
