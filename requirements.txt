@@ -3,3 +3,4 @@ vk~=3.0
 vk_api~=11.9.9
 django-cors-headers
 yookassa
+openpyxl
