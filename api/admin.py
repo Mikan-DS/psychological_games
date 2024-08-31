@@ -10,6 +10,7 @@ from django.utils.html import format_html
 from django.utils.timezone import make_naive
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
+from django.utils.translation import gettext_lazy as _
 
 from .models import ProjectSummary, ProjectParameter, TestResult, TestResultParameter
 
@@ -115,7 +116,11 @@ def create_excel_sheet(workbook, project: ProjectSummary, queryset):
             if purchases:
                 tarif = purchases.last().item_type
 
-        row = [tarif, phone, obj.name, obj.ip, end_time, str(timedelta(seconds=obj.duration))]
+        name = obj.name
+        if obj.user:
+            name = " ".join((obj.user.first_name, obj.user.last_name)) or obj.user.username
+
+        row = [tarif, phone, name, obj.ip, end_time, str(timedelta(seconds=obj.duration))]
         for param in parameters:
             obj_param = obj.parameters.filter(project_parameter=param)
             if obj_param:
@@ -150,11 +155,27 @@ class TestResultParameterInline(admin.TabularInline):
     fields = ['name', 'value']
 
 
+class PaidFilter(admin.SimpleListFilter):
+    title = _('Статус оплаты')
+    parameter_name = 'paid_status'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('paid', _('Платные')),
+            ('free', _('Бесплатные')),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'paid':
+            return queryset.filter(user__purchases__paid=True).distinct()
+        if self.value() == 'free':
+            return queryset.exclude(user__purchases__paid=True)
+
 class TestResultAdmin(admin.ModelAdmin):
     inlines = [TestResultParameterInline]
-    list_display = ['project', 'name', 'ip', 'end_time', 'duration']
-    search_fields = ['project__name', 'name', 'ip']
-    list_filter = ['project', 'end_time']
+    list_display = ['project', 'user', 'name', 'ip', 'end_time', 'duration']
+    search_fields = ['project__name', 'name', 'ip', 'user__username']
+    list_filter = ['project', 'end_time', PaidFilter]
 
     actions = [export_to_excel]
 
