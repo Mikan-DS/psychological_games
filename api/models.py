@@ -5,7 +5,7 @@ from django.utils.datetime_safe import datetime
 
 class ProjectSummary(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="ID")
-    name = models.CharField(max_length=80, verbose_name="Название таблицы")
+    name = models.CharField(max_length=80, verbose_name="Название таблицы", unique=True)
 
     class Meta:
         verbose_name = "Таблица"
@@ -29,6 +29,7 @@ class ProjectParameter(models.Model):
     class Meta:
         verbose_name = "Поле"
         verbose_name_plural = "Поля"
+        unique_together = ('project', 'name')
 
     def __str__(self):
         return f"{self.name} ({self.project.name})"
