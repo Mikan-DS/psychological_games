@@ -62,6 +62,10 @@ def update_from_old_type_database(request):
     if not request.user.is_superuser:
         return JsonResponse({"message": "you are not administrator"}, status=403)
 
+    for param in ProjectParameter.objects.all():
+        if not TestResult.objects.filter(project_parameter=param).exists():
+            param.delete()
+
     for result in TestResult.objects.all():
         if not result.project and result.project_name:
             project, create = ProjectSummary.objects.get_or_create(name=result.project_name)
@@ -73,7 +77,7 @@ def update_from_old_type_database(request):
             for parameter in result.parameters.all():
                 if not parameter.project_parameter and parameter.name:
                     project_parameter, create = ProjectParameter.objects.get_or_create(
-                        name=parameter,
+                        name=parameter.name,
                         project=result.project)
                     parameter.project_parameter = project_parameter
                     parameter.name = None
