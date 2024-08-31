@@ -58,7 +58,7 @@ def add_result(request):
         return HttpResponse(f"Exception: {repr(e)}", status=500)
 
 
-def update_from_old_type_database(self, request):
+def update_from_old_type_database(request):
     if not request.user.is_superuser:
         return JsonResponse({"message": "you are not administrator"}, status=403)
 
