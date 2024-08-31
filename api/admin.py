@@ -102,7 +102,7 @@ def create_excel_sheet(workbook, project: ProjectSummary, queryset):
     for i, _ in enumerate(headers):
         ws.cell(row=1, column=i + 1).font = Font(bold=True)
 
-    for obj in project.results.all():
+    for obj in project_results:
         end_time = obj.end_time.strftime("%Y-%m-%d %H:%M:%S")
 
         tarif = 'Анонимный'
