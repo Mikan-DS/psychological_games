@@ -61,7 +61,7 @@ class TestResult(models.Model):
         auth = False
         if self.user:
             auth = True
-        return (f'{self.project.name}: {self.user.first_name if auth else self.name}'
+        return (f'{self.project.name if self.project else "???"}: {self.user.first_name if auth else self.name}'
                 f' ({"Авторизован" if auth else "Неавторизован"})')
 
     class Meta:
