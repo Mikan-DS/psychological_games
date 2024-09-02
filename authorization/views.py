@@ -84,7 +84,7 @@ def pay_init(request):
                     "type": "redirect",
                     "return_url": f"{settings.pay_url}pay/{purchase.id}"
                 },
-                "capture": False,
+                "capture": True,
                 "description": "Игра" if buy_type == 'game' else "Игра и консультация",
                 "metadata": {
                     "order_id": str(purchase.id)
