@@ -40,6 +40,8 @@ class Game(models.Model):
     def has_access(self, user: User) -> bool:
         if self.access == 1:
             return user.is_staff
+        elif user.is_staff:
+            return True
         elif self.access == 2:
             return Purchase.objects.filter(user=user, paid=True).exists()
         elif self.access == 3:
