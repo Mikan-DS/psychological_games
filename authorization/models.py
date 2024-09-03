@@ -6,7 +6,7 @@ from django.utils import timezone
 
 
 class User(AbstractUser):
-    phone = models.BigIntegerField(unique=True, null=False, blank=False)
+    phone = models.BigIntegerField(unique=True, null=True, blank=True)
 
     objects = UserManager()
 
