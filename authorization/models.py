@@ -6,12 +6,14 @@ from django.utils import timezone
 
 
 class User(AbstractUser):
-    phone = models.BigIntegerField(unique=True, null=True, blank=True)
+    phone = models.BigIntegerField(unique=True, null=True, blank=True, verbose_name='Номер телефона')
 
     objects = UserManager()
 
     class Meta:
         db_table = 'auth_user'
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
 class ConfirmationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

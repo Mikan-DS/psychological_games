@@ -7,27 +7,26 @@ from .models import Settings, Purchase, ConsultationParameters, User
 
 
 class CustomUserCreationForm(UserCreationForm):
-
     class Meta:
         model = User
         fields = ("email",)
 
 
 class CustomUserChangeForm(UserChangeForm):
-
     class Meta:
         model = User
         fields = ("email",)
+
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = User
-    list_display = ("phone", "email", "is_staff", "is_active",)
-    list_filter = ("phone", "email", "is_staff", "is_active",)
+    list_display = ("username", "phone", "email", "is_staff",)
+    list_filter = ("username", "phone", "email", "is_staff",)
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
-        ("Permissions", {"fields": ("is_staff", "is_active", "groups", "user_permissions")}),
+        (None, {"fields": ("phone", "firstname", "lastname", "email", "password")}),
+        ("Разрешения", {"fields": ("is_staff", "is_active", "groups", "user_permissions")}),
     )
     add_fieldsets = (
         (None, {
@@ -36,13 +35,14 @@ class CustomUserAdmin(UserAdmin):
                 "email", "password1", "password2", "is_staff",
                 "is_active", "groups", "user_permissions"
             )}
-        ),
+         ),
     )
-    search_fields = ("email",)
-    ordering = ("email",)
+    search_fields = ("email", "username", "phone", "email")
+    ordering = ("id",)
 
 
 admin.site.register(User, CustomUserAdmin)
+
 
 class SettingsAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
@@ -54,9 +54,11 @@ class SettingsAdmin(admin.ModelAdmin):
 
 admin.site.register(Settings, SettingsAdmin)
 
+
 class ConsultationParametersInline(admin.TabularInline):
     model = ConsultationParameters
     extra = 1
+
 
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = ('user', 'item_type', 'cost', 'paid')
@@ -84,6 +86,6 @@ class ConsultationParametersAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         return qs.filter(purchase__item_type='game_consultation')
 
+
 admin.site.register(Purchase, PurchaseAdmin)
 admin.site.register(ConsultationParameters, ConsultationParametersAdmin)
-
