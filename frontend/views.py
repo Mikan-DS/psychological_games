@@ -1,9 +1,9 @@
-from django.contrib.auth.models import User
+
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from yookassa import Payment, Configuration
 
-from authorization.models import Purchase, Settings
+from authorization.models import Purchase, Settings, User
 
 
 # Create your views here.
@@ -33,7 +33,7 @@ def get_user(request):
 
 def checknumber(request, phone):
     try:
-        user = User.objects.get(pk=int(phone.replace(" ", "")))
+        user = User.objects.get(phone=int(phone.replace(" ", "")))
         if user and Purchase.objects.filter(user=user, paid=True).exists():
             return JsonResponse({"result": False})
     except:

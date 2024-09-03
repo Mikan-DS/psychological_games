@@ -3,10 +3,9 @@ import string
 import time
 from datetime import timedelta
 
-from django.contrib.auth.models import User
 from django.utils.datetime_safe import datetime
 
-from authorization.models import Settings, ConfirmationCode
+from authorization.models import Settings, ConfirmationCode, User
 from authorization.utils import generate_random_code
 
 

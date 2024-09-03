@@ -2,12 +2,11 @@ import json
 
 import vk_api
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 
-from authorization.models import Settings, ConfirmationCode, Age, ContactWay, ConsultationParameters, Purchase
+from authorization.models import Settings, ConfirmationCode, Age, ContactWay, ConsultationParameters, Purchase, User
 from vkapi.utils import generate_and_send_login_code
 
 from yookassa import Configuration, Payment
@@ -36,7 +35,7 @@ def pay_init(request):
                 return JsonResponse({'error': 'Phone, buy_type and name are required'}, status=400)
 
             user, created = User.objects.get_or_create(
-                id=phone,
+                phone=phone,
                 defaults={
                     'username': "without_vk_" + phone,
                     'email': email,
@@ -107,7 +106,7 @@ def pay_init(request):
 def login_init(request, phone):
     phone = phone.replace(" ", "")
     try:
-        user = User.objects.get(pk=phone)
+        user = User.objects.get(phone=phone)
         settings = Settings.objects.first()
 
         if "without_vk" in user.username:
@@ -137,7 +136,7 @@ def login_init(request, phone):
 
 def login_code(request, phone, code):
     try:
-        user = User.objects.get(pk=phone)
+        user = User.objects.get(phone=phone)
 
         confirmation_code = ConfirmationCode.objects.get(code=code, user=user, is_used=False)
 

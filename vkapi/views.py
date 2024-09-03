@@ -1,11 +1,10 @@
 import json
 
 import vk_api
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from authorization.models import Settings
+from authorization.models import Settings, User
 from vkapi.utils import generate_and_send_login_code, write_message
 
 

@@ -1,9 +1,17 @@
 from datetime import timedelta
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import UserManager, AbstractUser
 from django.db import models
 from django.utils import timezone
 
+
+class User(AbstractUser):
+    phone = models.BigIntegerField(unique=True, null=False, blank=False)
+
+    objects = UserManager()
+
+    class Meta:
+        db_table = 'auth_user'
 
 class ConfirmationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
