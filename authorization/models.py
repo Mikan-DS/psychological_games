@@ -9,7 +9,7 @@ class ConfirmationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     code = models.CharField(max_length=100)
     is_used = models.BooleanField(default=False)
-    expires_at = models.DateTimeField(default=timezone.now() + timedelta(days=1))
+    expires_at = models.DateTimeField()
 
     def __str__(self):
         return f"ConfirmationCode(user={self.user}, code={self.code}, is_used={self.is_used}, expires_at={self.expires_at})"
@@ -24,7 +24,6 @@ class ConfirmationCode(models.Model):
         ordering = ['-expires_at']
 
 
-
 class Settings(models.Model):
     confirmation_code_expiry = models.DurationField(
         default=timedelta(hours=1),
@@ -37,7 +36,7 @@ class Settings(models.Model):
     vk_confirmation_token = models.CharField(max_length=100,
                                              blank=True,
                                              null=True,
-                                            verbose_name="VK токен подтверждения (Используется только при привязке)")
+                                             verbose_name="VK токен подтверждения (Используется только при привязке)")
     vk_secret_key = models.CharField(max_length=100,
                                      blank=True,
                                      null=True,
@@ -90,7 +89,7 @@ class Purchase(models.Model):
         ('game_consultation', 'Игра и консультация'),
     ]
     item_type = models.CharField(max_length=255, choices=ITEM_TYPES, verbose_name="Тип")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name="purchases")
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Стоимость")
     paid = models.BooleanField(default=False, verbose_name="Оплачено")
 
@@ -102,7 +101,6 @@ class Purchase(models.Model):
     class Meta:
         verbose_name = "Покупка"
         verbose_name_plural = "Покупки"
-
 
 
 class ContactWay(models.Model):
@@ -118,7 +116,6 @@ class ContactWay(models.Model):
         verbose_name_plural = "Способы контакта"
 
 
-
 class Age(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="ID")
     value = models.CharField(max_length=255, verbose_name="Возраст")
@@ -129,7 +126,6 @@ class Age(models.Model):
     class Meta:
         verbose_name = "Возраст"
         verbose_name_plural = "Возрасты"
-
 
 
 class ConsultationParameters(models.Model):
@@ -150,4 +146,3 @@ class ConsultationParameters(models.Model):
     class Meta:
         verbose_name = "Параметры консультации"
         verbose_name_plural = "Параметры консультаций"
-

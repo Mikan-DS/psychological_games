@@ -9,12 +9,14 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save, post_delete
 
+from authorization.models import Purchase
+
 
 class Game(models.Model):
 
     ACCESS_CHOICES = [
         (1, 'Персонал'),
-        (2, 'Купившие игру (пока == авторизован)'),
+        (2, 'Купившие игру'),
         (3, 'Авторизован'),
         (4, 'Все'),
     ]
@@ -38,7 +40,9 @@ class Game(models.Model):
     def has_access(self, user: User) -> bool:
         if self.access == 1:
             return user.is_staff
-        elif self.access in (2, 3):
+        elif self.access == 2:
+            return Purchase.objects.filter(user=user, paid=True).exists()
+        elif self.access == 3:
             return user.is_authenticated
         else:
             return True

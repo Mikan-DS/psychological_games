@@ -28,6 +28,7 @@ urlpatterns = ([
     path('vk_callback/', include('vkapi.urls')),
     path('auth/', include('authorization.urls')),
     path('games/', include('games.urls')),
+    path('api/', include('api.urls')),
     path('bild190cjvveb', RedirectView.as_view(url="/games/bild190cjvveb")),
     path('Cooljungle-1.60-web', RedirectView.as_view(url="/games/cooljungle-160-web")),
     path('cooljungle160gp', RedirectView.as_view(url="/games/cooljungle-160-gp")),
