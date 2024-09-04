@@ -43,7 +43,7 @@ def index(request):
                                   )
 
                 if data['object']['body'].startswith('+') and in_cause_phone.isdigit():
-                    user = User.objects.filter(id=in_cause_phone)
+                    user = User.objects.filter(phone__in=(int("7"+in_cause_phone[1:]), int("8"+in_cause_phone[1:])))
                     if user:
                         user = user.first()
 
@@ -57,6 +57,12 @@ def index(request):
                                 f"Если вы действительно оплачивали игру и указывали этот "
                                 f"номер телефона при регистрации - обратитесь в поддержку."
                             )
+                    else:
+                        write_message(
+                            api,
+                            user_id,
+                            f"Пользователь с номером +{in_cause_phone} не найден"
+                        )
 
 
                 if by_ref_source and "without_vk" in user.username:

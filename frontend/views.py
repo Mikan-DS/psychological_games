@@ -33,7 +33,8 @@ def get_user(request):
 
 def checknumber(request, phone):
     try:
-        user = User.objects.get(phone=int(phone.replace(" ", "")))
+        in_cause_phone = phone.replace(" ", "")
+        user = User.objects.filter(phone__in=(int("7" + in_cause_phone[1:]), int("8" + in_cause_phone[1:]))).first()
         if user and Purchase.objects.filter(user=user, paid=True).exists():
             return JsonResponse({"result": False})
     except:
