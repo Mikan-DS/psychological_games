@@ -2,7 +2,7 @@ import json
 
 import vk_api
 from django.contrib.auth import login, logout
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 
@@ -108,6 +108,15 @@ def login_init(request, phone):
     try:
         user = User.objects.get(phone=phone)
         settings = Settings.objects.first()
+
+        if not Purchase.objects.filter(user=user, paid=True).exists():
+            orders = Purchase.objects.filter(user=user, paid=False)
+
+            for order in orders:
+                payment = Payment.find_one(order.yookassa_order_id)
+                if payment["paid"]:
+                    order.paid = True
+                    order.save()
 
         if "without_vk" in user.username:
             return JsonResponse({

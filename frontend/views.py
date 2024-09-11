@@ -1,13 +1,13 @@
 
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from yookassa import Payment, Configuration
 
 from authorization.models import Purchase, Settings, User
 
 
 # Create your views here.
-def app(request, project_id=None):
+def app(request):
 
     settings = Settings.objects.first()
 
@@ -55,6 +55,6 @@ def pay_debug(request, order_id):
         if payment["paid"]:
             order.paid = True
             order.save()
-        return HttpResponseRedirect("/")
+        return redirect(f"/?login={order.user.phone}")
     except Exception as e:
         return HttpResponseRedirect("/")

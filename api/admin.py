@@ -3,6 +3,7 @@ from datetime import timedelta
 
 import openpyxl
 from django.contrib import admin
+from django.db.models import QuerySet
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from django.urls import reverse
@@ -83,8 +84,8 @@ def export_to_excel(modeladmin, request, queryset):
     return response
 
 
-def create_excel_sheet(workbook, project: ProjectSummary, queryset):
-    project_results = queryset.filter(project=project)
+def create_excel_sheet(workbook, project: ProjectSummary, queryset: QuerySet) -> None:
+    project_results = queryset.filter(project=project).order_by('-end_time')
 
     if project_results.count() < 1:
         return
@@ -178,6 +179,8 @@ class TestResultAdmin(admin.ModelAdmin):
     list_filter = ['project', 'end_time', PaidFilter]
 
     actions = [export_to_excel]
+
+    ordering = ("-end_time",)
 
 
 admin.site.register(TestResult, TestResultAdmin)
