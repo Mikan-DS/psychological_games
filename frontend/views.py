@@ -55,6 +55,6 @@ def pay_debug(request, order_id):
         if payment["paid"]:
             order.paid = True
             order.save()
-        return redirect(f"/?login={order.user.phone}")
+        return redirect(f"/?login={order.user.phone}&newUser=true")
     except Exception as e:
         return HttpResponseRedirect("/")
