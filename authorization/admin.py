@@ -66,11 +66,11 @@ class PurchaseAdmin(admin.ModelAdmin):
     list_filter = ('paid',)
     ordering = ('-id',)
 
-    readonly_fields = ("user_phone", "user_name", "user_email")
+    readonly_fields = ("user_phone", "yookassa_order_id")
 
     fieldsets = (
         (None, {"fields": ("product", "cost", "paid", "yookassa_order_id")}),
-        ("Пользователь", {"fields": ("user_phone", )})
+        ("Пользователь", {"fields": ("user", "user_phone", "user_name", "user_email")})
     )
 
     @admin.display(description="Номер телефона")
@@ -79,10 +79,12 @@ class PurchaseAdmin(admin.ModelAdmin):
 
     user_phone.short_description = "Номер телефона"
 
-    def get_user_name(self, obj):
+    @admin.display(description="Имя")
+    def user_name(self, obj):
         return " ".join((obj.user.first_name, obj.user.last_name))
 
-    def get_user_email(self, obj):
+    @admin.display(description="Почта")
+    def user_email(self, obj):
         return obj.user.email
 
     inlines = [ConsultationParametersInline]
