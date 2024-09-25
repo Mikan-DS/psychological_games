@@ -16,7 +16,7 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return f"+{self.phone}"
+        return f"+{self.phone}" if self.phone else self.username
 
 
 class ConfirmationCode(models.Model):
