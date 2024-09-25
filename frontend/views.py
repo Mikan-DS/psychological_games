@@ -1,9 +1,10 @@
 
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 from yookassa import Payment, Configuration
 
-from authorization.models import Purchase, Settings, User
+from authorization.models import Purchase, Settings, User, Product
 
 
 # Create your views here.
@@ -40,6 +41,14 @@ def checknumber(request, phone):
     except:
         pass
     return JsonResponse({"result": True})
+
+@csrf_exempt
+def get_prices(request):
+    products = Product.objects.all()
+    prices = {}
+    for product in products:
+        prices[product.article] = product.price
+    return JsonResponse(prices)
 
 
 def pay_debug(request, order_id):

@@ -15,6 +15,7 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
+
 class ConfirmationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     code = models.CharField(max_length=100)
@@ -92,13 +93,22 @@ class Settings(models.Model):
         return super(Settings, self).save(*args, **kwargs)
 
 
+class Product(models.Model):
+    article = models.CharField(max_length=255, verbose_name="Артикул", unique=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Стоимость")
+    verbose = models.CharField(max_length=255, verbose_name="Название")
+
+
 class Purchase(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="ID")
     ITEM_TYPES = [
         ('game', 'Игра'),
         ('game_consultation', 'Игра и консультация'),
     ]
-    item_type = models.CharField(max_length=255, choices=ITEM_TYPES, verbose_name="Тип")
+    item_type = models.CharField(max_length=255, choices=ITEM_TYPES,
+                                 verbose_name="Тип (устаревшее, необходимо использовать новый тип)",
+                                 null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, verbose_name="Тип", null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name="purchases")
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Стоимость")
     paid = models.BooleanField(default=False, verbose_name="Оплачено")

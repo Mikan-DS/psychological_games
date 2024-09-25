@@ -3,7 +3,7 @@ import string
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 
-from .models import Settings, Age, ContactWay
+from .models import Settings, Age, ContactWay, Product, Purchase
 from .utils import generate_random_code
 
 
@@ -26,7 +26,26 @@ def create_default_settings(sender, **kwargs):
         for method, name in default_contact_ways:
             ContactWay.objects.create(method=method, name=name)
 
-    # if not OrderItem.objects.exists():
-    #     default_order_items = ["game", "game_consultation"]
-    #     for item_type in default_order_items:
-    #         OrderItem.objects.create(name=item_type, item_type=item_type)
+    if not Product.objects.exists():
+        default_product = [
+            ("game", "Игра", 500),
+            ("game_consultation", "Игра и консультация", 3500)
+        ]
+        for article, verbose, price in default_product:
+            Product.objects.create(
+                article=article,
+                price=price,
+                verbose=verbose
+            )
+
+    if Product.objects.exists():
+
+        for purchase in Purchase.objects.all():
+            try:
+                if not purchase.product:
+                    product = Product.objects.get(name=purchase.item_type)
+                    purchase.product = product
+                    purchase.item_type = None
+                    purchase.save()
+            except:
+                print("Purchase cannot be added: ", purchase.item_type)
