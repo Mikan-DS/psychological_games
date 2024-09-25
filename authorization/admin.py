@@ -70,7 +70,7 @@ class PurchaseAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": ("product", "cost", "paid", "yookassa_order_id")}),
-        ("Пользователь", {"fields": ("get_user_phone", )})
+        ("Пользователь", {"fields": ("user__phone", )})
     )
 
     def get_user_phone(self, obj):
