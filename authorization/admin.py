@@ -59,8 +59,10 @@ class ConsultationParametersInline(admin.TabularInline):
     model = ConsultationParameters
     extra = 0
 
-class UserInline(admin.TabularInline):
+
+class UserInline(admin.StackedInline):
     model = User
+
 
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'cost', 'paid')
