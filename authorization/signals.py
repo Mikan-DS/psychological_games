@@ -43,7 +43,7 @@ def create_default_settings(sender, **kwargs):
         for purchase in Purchase.objects.all():
             try:
                 if not purchase.product:
-                    product = Product.objects.get(name=purchase.item_type)
+                    product = Product.objects.get(article=purchase.item_type)
                     purchase.product = product
                     purchase.item_type = None
                     purchase.save()
