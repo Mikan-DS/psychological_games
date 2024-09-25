@@ -110,6 +110,12 @@ def login_init(request, phone):
     phone = phone.replace(" ", "")
     try:
         user = User.objects.get(phone=phone)
+
+        login(request, user)
+        return JsonResponse({
+            "result": "auto"
+        })
+
         settings = Settings.objects.first()
 
         if not Purchase.objects.filter(user=user, paid=True).exists():
