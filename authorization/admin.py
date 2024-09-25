@@ -75,7 +75,7 @@ class PurchaseAdmin(admin.ModelAdmin):
 
     @admin.display(description="Номер телефона")
     def user_phone(self, obj):
-        return obj.user.phone
+        return f"+{obj.user.phone}"
 
     user_phone.short_description = "Номер телефона"
 
@@ -83,14 +83,14 @@ class PurchaseAdmin(admin.ModelAdmin):
     def user_name(self, obj):
         return " ".join((obj.user.first_name, obj.user.last_name))
 
-    user_name.short_description = "Номер телефона"
+    user_name.short_description = "Имя"
 
 
     @admin.display(description="Почта")
     def user_email(self, obj):
-        return obj.user.email
+        return obj.user.email or "-"
 
-    user_email.short_description = "Номер телефона"
+    user_email.short_description = "Почта"
 
 
     inlines = [ConsultationParametersInline]
