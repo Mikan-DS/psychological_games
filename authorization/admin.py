@@ -66,9 +66,11 @@ class PurchaseAdmin(admin.ModelAdmin):
     list_filter = ('paid',)
     ordering = ('-id',)
 
+    readonly_fields = ("user_phone", "user_name", "user_email")
+
     fieldsets = (
         (None, {"fields": ("product", "cost", "paid", "yookassa_order_id")}),
-        ("Пользователь", {"fields": ("get_user_phone", "get_user_name", "get_user_email")})
+        # ("Пользователь", {"fields": ("get_user_phone", "get_user_name", "get_user_email")})
     )
 
     def get_user_phone(self, obj):
