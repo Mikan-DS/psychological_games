@@ -47,5 +47,5 @@ def create_default_settings(sender, **kwargs):
                     purchase.product = product
                     purchase.item_type = None
                     purchase.save()
-            except:
-                print("Purchase cannot be added: ", purchase.item_type)
+            except Exception as:
+                print("Purchase cannot be added: ", purchase.item_type, repr(e))
