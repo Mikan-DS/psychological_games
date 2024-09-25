@@ -96,7 +96,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('verbose',)
     ordering = ('price',)
     fieldsets = (
-        (None, {"fields": ("price",)})
+        (None, {"fields": ("price",)}),
     )
 
 
