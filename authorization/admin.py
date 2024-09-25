@@ -90,4 +90,11 @@ class ConsultationParametersAdmin(admin.ModelAdmin):
 admin.site.register(Purchase, PurchaseAdmin)
 admin.site.register(ConsultationParameters, ConsultationParametersAdmin)
 
-admin.site.register(Product, Product)
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('price',)
+    search_fields = ('verbose',)
+    ordering = ('price',)
+
+
+admin.site.register(Product, ProductAdmin)

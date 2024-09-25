@@ -98,6 +98,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Стоимость")
     verbose = models.CharField(max_length=255, verbose_name="Название")
 
+    def __str__(self):
+        return self.verbose
+
 
 class Purchase(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="ID")
