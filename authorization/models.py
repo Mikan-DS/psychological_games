@@ -15,6 +15,9 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
+    def __str__(self):
+        return f"+{self.phone}"
+
 
 class ConfirmationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -123,7 +126,7 @@ class Purchase(models.Model):
     yookassa_order_id = models.CharField(max_length=255, verbose_name="ID платежа yookassa", null=True, blank=True)
 
     def __str__(self):
-        return f"{self.get_item_type_display()} от {self.user} за {self.cost} - {'Оплачено' if self.paid else 'Не оплачено'}"
+        return f"{self.product.verbose} от {self.user} за {self.cost} - {'Оплачено' if self.paid else 'Не оплачено'}"
 
     class Meta:
         verbose_name = "Покупка"
