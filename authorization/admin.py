@@ -83,9 +83,15 @@ class PurchaseAdmin(admin.ModelAdmin):
     def user_name(self, obj):
         return " ".join((obj.user.first_name, obj.user.last_name))
 
+    user_name.short_description = "Номер телефона"
+
+
     @admin.display(description="Почта")
     def user_email(self, obj):
         return obj.user.email
+
+    user_email.short_description = "Номер телефона"
+
 
     inlines = [ConsultationParametersInline]
 
