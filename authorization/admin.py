@@ -61,7 +61,7 @@ class ConsultationParametersInline(admin.TabularInline):
 
 
 class PurchaseAdmin(admin.ModelAdmin):
-    list_display = ('user', 'product__verbose', 'cost', 'paid')
+    list_display = ('user', 'product', 'cost', 'paid')
     search_fields = ('item_type', 'user__username')
     list_filter = ('paid',)
     ordering = ('-id',)
