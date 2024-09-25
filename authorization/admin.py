@@ -57,14 +57,18 @@ admin.site.register(Settings, SettingsAdmin)
 
 class ConsultationParametersInline(admin.TabularInline):
     model = ConsultationParameters
-    extra = 1
+    extra = 0
 
 
 class PurchaseAdmin(admin.ModelAdmin):
-    list_display = ('user', 'item_type', 'cost', 'paid')
+    list_display = ('user', 'product__verbose', 'cost', 'paid')
     search_fields = ('item_type', 'user__username')
     list_filter = ('paid',)
     ordering = ('-id',)
+
+    fieldsets = (
+        (None, {"fields": ("product", "cost", "paid", "yookassa_order_id")}),
+    )
 
     inlines = [ConsultationParametersInline]
 
