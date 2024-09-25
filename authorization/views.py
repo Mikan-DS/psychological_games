@@ -116,36 +116,36 @@ def login_init(request, phone):
             "result": "auto"
         })
 
-        settings = Settings.objects.first()
-
-        if not Purchase.objects.filter(user=user, paid=True).exists():
-            orders = Purchase.objects.filter(user=user, paid=False)
-
-            for order in orders:
-                payment = Payment.find_one(order.yookassa_order_id)
-                if payment["paid"]:
-                    order.paid = True
-                    order.save()
-
-        if "without_vk" in user.username:
-            return JsonResponse({
-                'result': True,
-                "message": "Получите временный код для входа и следуйте инструкциям в",
-                "bot_url": settings.vk_chat_url})
-
-        try:
-
-            token = settings.vk_token
-            vk_session = vk_api.VkApi(token=token)
-            api = vk_session.get_api()
-
-            generate_and_send_login_code(api, user)
-        except Exception as e:
-            print(e)
-
-        return JsonResponse({'result': True,
-                             'message': "Получите временный код для входа в",
-                             "bot_url": settings.vk_chat_url})
+        # settings = Settings.objects.first()
+        #
+        # if not Purchase.objects.filter(user=user, paid=True).exists():
+        #     orders = Purchase.objects.filter(user=user, paid=False)
+        #
+        #     for order in orders:
+        #         payment = Payment.find_one(order.yookassa_order_id)
+        #         if payment["paid"]:
+        #             order.paid = True
+        #             order.save()
+        #
+        # if "without_vk" in user.username:
+        #     return JsonResponse({
+        #         'result': True,
+        #         "message": "Получите временный код для входа и следуйте инструкциям в",
+        #         "bot_url": settings.vk_chat_url})
+        #
+        # try:
+        #
+        #     token = settings.vk_token
+        #     vk_session = vk_api.VkApi(token=token)
+        #     api = vk_session.get_api()
+        #
+        #     generate_and_send_login_code(api, user)
+        # except Exception as e:
+        #     print(e)
+        #
+        # return JsonResponse({'result': True,
+        #                      'message': "Получите временный код для входа в",
+        #                      "bot_url": settings.vk_chat_url})
 
     except Exception as e:
         pass

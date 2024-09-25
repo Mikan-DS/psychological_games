@@ -59,6 +59,8 @@ class ConsultationParametersInline(admin.TabularInline):
     model = ConsultationParameters
     extra = 0
 
+class UserInline(admin.TabularInline):
+    model = User
 
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'cost', 'paid')
@@ -70,7 +72,7 @@ class PurchaseAdmin(admin.ModelAdmin):
         (None, {"fields": ("product", "cost", "paid", "yookassa_order_id")}),
     )
 
-    inlines = [ConsultationParametersInline]
+    inlines = [ConsultationParametersInline, UserInline]
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
