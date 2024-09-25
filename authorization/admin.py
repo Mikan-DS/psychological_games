@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import Settings, Purchase, ConsultationParameters, User
+from .models import Settings, Purchase, ConsultationParameters, User, Product
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -89,3 +89,5 @@ class ConsultationParametersAdmin(admin.ModelAdmin):
 
 admin.site.register(Purchase, PurchaseAdmin)
 admin.site.register(ConsultationParameters, ConsultationParametersAdmin)
+
+admin.site.register(Product, Product)
