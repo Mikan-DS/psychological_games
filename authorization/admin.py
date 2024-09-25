@@ -70,13 +70,14 @@ class PurchaseAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": ("product", "cost", "paid", "yookassa_order_id")}),
-        ("Пользователь", {"fields": ("user__phone", )})
+        ("Пользователь", {"fields": ("user_phone", )})
     )
 
-    def get_user_phone(self, obj):
+    @admin.display(description="Номер телефона")
+    def user_phone(self, obj):
         return obj.user.phone
 
-    get_user_phone.short_description = "Номер телефона"
+    user_phone.short_description = "Номер телефона"
 
     def get_user_name(self, obj):
         return " ".join((obj.user.first_name, obj.user.last_name))
