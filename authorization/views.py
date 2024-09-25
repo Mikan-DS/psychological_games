@@ -6,7 +6,8 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 
-from authorization.models import Settings, ConfirmationCode, Age, ContactWay, ConsultationParameters, Purchase, User
+from authorization.models import Settings, ConfirmationCode, Age, ContactWay, ConsultationParameters, Purchase, User, \
+    Product
 from vkapi.utils import generate_and_send_login_code
 
 from yookassa import Configuration, Payment
@@ -50,8 +51,10 @@ def pay_init(request):
             if Purchase.objects.filter(user=user, paid=True).exists():
                 return JsonResponse({'error': "Уже куплено"}, status=500)
 
+            product = Product.objects.get(article=buy_type)
+
             purchase = Purchase.objects.create(
-                item_type=buy_type,
+                product=product,
                 user=user,
                 cost=1,#3750 if buy_type == 'game' else 7900,
                 paid=False
