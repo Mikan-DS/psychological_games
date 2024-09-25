@@ -60,10 +60,6 @@ class ConsultationParametersInline(admin.TabularInline):
     extra = 0
 
 
-class UserInline(admin.StackedInline):
-    model = User
-
-
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'cost', 'paid')
     search_fields = ('item_type', 'user__username')
@@ -72,9 +68,19 @@ class PurchaseAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": ("product", "cost", "paid", "yookassa_order_id")}),
+        ("Пользователь", {"fields": ("user_phone", "user_name", "user_email")})
     )
 
-    inlines = [ConsultationParametersInline, UserInline]
+    def get_user_phone(self, obj):
+        return obj.user.phone
+
+    def get_user_name(self, obj):
+        return " ".join((obj.user.first_name, obj.user.last_name))
+
+    def get_user_email(self, obj):
+        return obj.user.email
+
+    inlines = [ConsultationParametersInline]
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
