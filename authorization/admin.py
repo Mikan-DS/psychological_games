@@ -92,9 +92,12 @@ admin.site.register(ConsultationParameters, ConsultationParametersAdmin)
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('price',)
+    list_display = ('verbose', 'price',)
     search_fields = ('verbose',)
     ordering = ('price',)
+    fieldsets = (
+        (None, {"fields": ("price",)})
+    )
 
 
 admin.site.register(Product, ProductAdmin)
