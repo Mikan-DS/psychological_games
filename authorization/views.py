@@ -56,7 +56,7 @@ def pay_init(request):
             purchase = Purchase.objects.create(
                 product=product,
                 user=user,
-                cost=1,#3750 if buy_type == 'game' else 7900,
+                cost=product.price,
                 paid=False
             )
 
