@@ -66,7 +66,14 @@ class PurchaseAdmin(admin.ModelAdmin):
     list_filter = ('paid',)
     ordering = ('-id',)
 
-    readonly_fields = ("user_phone", "yookassa_order_id", "user_name", "user_email")
+    readonly_fields = (
+        "user",
+        "product",
+        "cost",
+        "user_phone",
+        "yookassa_order_id",
+        "user_name",
+        "user_email")
 
     fieldsets = (
         (None, {"fields": ("product", "cost", "paid", "yookassa_order_id")}),
