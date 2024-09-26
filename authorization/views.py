@@ -109,7 +109,10 @@ def pay_init(request):
 def login_init(request, phone):
     phone = phone.replace(" ", "")
     try:
-        user = User.objects.get(phone=phone)
+        try:
+            user = User.objects.get(phone="8"+phone[1:])
+        except User.DoesNotExist:
+            user = User.objects.get(phone="7"+phone[1:])
 
         login(request, user)
         return JsonResponse({
