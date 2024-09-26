@@ -79,7 +79,7 @@ def pay_init(request):
             # YOOKASSA
             payment = Payment.create({
                 "amount": {
-                    "value": f"{purchase.cost}.00",
+                    "value": f"{purchase.cost}",
                     "currency": "RUB"
                 },
                 "confirmation": {
