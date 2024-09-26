@@ -178,8 +178,14 @@ class TestResultAdmin(admin.ModelAdmin):
     search_fields = ['project__name', 'name', 'ip', 'user__username']
     list_filter = ['project', 'end_time', PaidFilter]
 
-    actions = [export_to_excel]
+    readonly_fields = ['duration_as_string']
 
+    actions = [export_to_excel]
+    fieldsets = (
+        (None, {"fields": ("name", "ip", "duration_as_string", "end_time", "project", "user")}),
+    )
+
+    @admin.display(description='Времени заняло')
     def duration_as_string(self, obj):
         return str(timedelta(seconds=obj.duration))
 
