@@ -5,5 +5,7 @@ class AuthorizationConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'authorization'
 
+    verbose_name = 'Настройка сервера и покупки'
+
     def ready(self):
         import authorization.signals

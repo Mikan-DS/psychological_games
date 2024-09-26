@@ -115,7 +115,7 @@ class ConsultationParametersAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Purchase, PurchaseAdmin)
-admin.site.register(ConsultationParameters, ConsultationParametersAdmin)
+# admin.site.register(ConsultationParameters, ConsultationParametersAdmin)
 
 
 class ProductAdmin(admin.ModelAdmin):
