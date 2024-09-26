@@ -174,11 +174,16 @@ class PaidFilter(admin.SimpleListFilter):
 
 class TestResultAdmin(admin.ModelAdmin):
     inlines = [TestResultParameterInline]
-    list_display = ['project', 'user', 'name', 'ip', 'end_time', 'duration']
+    list_display = ['project', 'user', 'name', 'ip', 'end_time', 'duration_as_string']
     search_fields = ['project__name', 'name', 'ip', 'user__username']
     list_filter = ['project', 'end_time', PaidFilter]
 
     actions = [export_to_excel]
+
+    def duration_as_string(self, obj):
+        return str(timedelta(seconds=obj.duration))
+
+    duration_as_string.short_description = 'Времени заняло'
 
     ordering = ("-end_time",)
 
