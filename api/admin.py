@@ -153,7 +153,7 @@ export_to_excel.short_description = "Экспорт в Excel"
 class TestResultParameterInline(admin.TabularInline):
     model = TestResultParameter
     extra = 1
-    fields = ['name', 'value']
+    fields = ['project_parameter', 'value']
 
 
 class PaidFilter(admin.SimpleListFilter):
