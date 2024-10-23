@@ -110,8 +110,8 @@ def create_excel_sheet(workbook, project: ProjectSummary, queryset: QuerySet) ->
         phone = ''
         if obj.user:
             tarif = "Зарегистрирован"
-            if obj.user.username.isnumeric():
-                phone = "+" + obj.user.username
+            if obj.user.phone:
+                phone = "+" + obj.user.phone
 
             purchases = obj.user.purchases.filter(paid=True)
             if purchases:
