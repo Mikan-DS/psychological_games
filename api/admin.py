@@ -116,6 +116,8 @@ def create_excel_sheet(workbook, project: ProjectSummary, queryset: QuerySet) ->
             purchases = obj.user.purchases.filter(paid=True)
             if purchases:
                 tarif = purchases.last().item_type
+            if obj.user.is_staff:
+                tarif = "Персонал"
 
         name = obj.name
         if obj.user:
